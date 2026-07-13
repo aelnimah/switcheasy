@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <rect width="120" height="120" rx="22" fill="#005DAA"/>
+  <circle cx="60" cy="38" r="14" fill="#FFCC00"/>
+  <text x="60" y="90" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="32" fill="#FFFFFF" text-anchor="middle">RBC</text>
+</svg>
