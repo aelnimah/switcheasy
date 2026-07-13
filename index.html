@@ -17,6 +17,8 @@
     --ink:#1C1C1C; --ink-soft:#616161; --paper:#F4F7F4; --surface:#FFFFFF; --line:#DCE3DC;
     --amber:#A66B00; --amber-pale:#FBF0DC;
     --terminal-bg:#0C1710; --terminal-line:#1B2E22; --terminal-text:#CFEFDA; --terminal-dim:#5E8770;
+    --shadow-card:0 1px 2px rgba(28,28,28,.04), 0 24px 64px -32px rgba(28,28,28,.25);
+    --shadow-float:0 20px 50px -22px rgba(0,0,0,.28);
   }
   *,*::before,*::after{box-sizing:border-box;}
   [hidden]{display:none !important;}
@@ -30,10 +32,18 @@
     display:flex; flex-direction:column;
   }
   ::selection{background:var(--td-green-pale);}
-  h1{font-weight:700;font-size:36px;line-height:1.12;letter-spacing:-0.02em;margin:0 0 16px;color:var(--ink);}
+  h1{font-weight:700;font-size:34px;line-height:1.12;letter-spacing:-0.02em;margin:0 0 14px;color:var(--ink);}
   p{margin:0;}
   button{font-family:inherit;min-height:44px;}
   img{max-width:100%;display:block;}
+
+  /* ---------- icon tiles (PNG drops in, emoji is the fallback) ---------- */
+  .tile{width:40px;height:40px;border-radius:10px;background:#fff;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;overflow:hidden;}
+  .tile img{width:72%;height:72%;object-fit:contain;}
+  .tile .tile-emoji{line-height:1;}
+  .tile.sm{width:24px;height:24px;border-radius:7px;font-size:13px;}
+  .tile.lg{width:48px;height:48px;border-radius:12px;font-size:23px;}
 
   /* ---------- chrome bar ---------- */
   .chrome-bar{
@@ -44,8 +54,9 @@
   }
   .chrome-left{display:flex;align-items:center;gap:12px;}
   .logo-tap{display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent;}
-  .logo-tap img{width:26px;height:26px;}
+  .logo-tap img{width:28px;height:28px;object-fit:contain;}
   .wordmark{font-weight:700;font-size:18px;letter-spacing:-0.01em;}
+  .wordmark small{font-weight:500;font-size:11px;color:var(--ink-soft);margin-left:7px;letter-spacing:0;}
   .proto-pill{
     font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);
     background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 12px;
@@ -79,16 +90,16 @@
   #device{
     max-width:1080px;width:100%;margin:0 auto;background:var(--surface);
     border:1px solid var(--line);border-radius:20px;
-    box-shadow:0 1px 2px rgba(28,28,28,.04), 0 24px 64px -32px rgba(28,28,28,.25);
+    box-shadow:var(--shadow-card);
     overflow:hidden;position:relative;display:flex;flex-direction:column;min-height:640px;
     transition:background .4s ease, border-color .4s ease;
   }
   #device.terminal-mode{background:var(--terminal-bg);border-color:var(--terminal-line);}
   #screen-root{flex:1;display:flex;flex-direction:column;}
-  .screen-pad{flex:1;display:flex;flex-direction:column;padding:52px 60px;}
+  .screen-pad{flex:1;display:flex;flex-direction:column;padding:48px 60px;}
 
   .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--td-green-dark);font-weight:600;margin-bottom:14px;text-transform:uppercase;}
-  .subcopy{color:var(--ink-soft);font-size:15px;line-height:1.6;max-width:540px;}
+  .subcopy{color:var(--ink-soft);font-size:15px;line-height:1.6;max-width:560px;}
 
   .pill-badge{display:inline-flex;align-items:center;gap:8px;background:var(--td-green-pale);color:var(--td-green-dark);border-radius:999px;padding:6px 14px;font-weight:600;font-size:13px;margin-bottom:20px;width:fit-content;}
   .pill-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--td-green);animation:pulse 1.6s infinite;}
@@ -120,13 +131,16 @@
   @keyframes rowIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
   /* ---------- Screen 0: landing ---------- */
-  .landing{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:14px;}
-  .landing-mark{display:flex;align-items:center;gap:14px;margin-bottom:26px;}
-  .landing-mark img{width:44px;height:44px;}
+  .landing{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:10px;}
+  .landing-mark{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
+  .landing-mark img{width:46px;height:46px;object-fit:contain;}
   .landing-mark .landing-wordmark{font-size:30px;font-weight:700;letter-spacing:-0.02em;}
-  .landing h1{font-size:42px;max-width:620px;}
-  .landing .subcopy{max-width:560px;margin-bottom:8px;}
-  .landing-picker-label{font-size:13px;font-weight:700;color:var(--ink);margin:34px 0 18px;letter-spacing:.01em;}
+  .landing h1{font-size:42px;max-width:640px;}
+  .landing .subcopy{max-width:560px;}
+  .trust-row{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--ink-soft);margin-top:18px;flex-wrap:wrap;justify-content:center;}
+  .trust-row .sep{color:var(--line);}
+  .trust-row svg{color:var(--td-green-dark);}
+  .landing-picker-label{font-size:13px;font-weight:700;color:var(--ink);margin:32px 0 16px;letter-spacing:.01em;}
   .scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:880px;}
   .scenario-card{
     text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;
@@ -136,8 +150,8 @@
   }
   .scenario-card:hover{border-color:#c3d3c3;transform:translateY(-3px);box-shadow:0 16px 32px -22px rgba(28,28,28,.3);}
   .scenario-card.selected{border-color:var(--td-green);background:var(--td-green-pale);}
-  .scenario-icon{width:46px;height:46px;border-radius:12px;background:var(--td-green-pale);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;}
-  .scenario-card.selected .scenario-icon{background:#fff;}
+  .scenario-card .tile.lg{margin-bottom:16px;background:var(--td-green-pale);border-color:transparent;}
+  .scenario-card.selected .tile.lg{background:#fff;}
   .scenario-card-label{font-weight:700;font-size:17px;letter-spacing:-0.01em;margin-bottom:6px;}
   .scenario-card-tagline{color:var(--ink-soft);font-size:13px;line-height:1.5;flex:1;}
   .scenario-card-cta{color:var(--td-green-dark);font-weight:600;font-size:13px;margin-top:16px;}
@@ -179,12 +193,13 @@
 
   /* ---------- Screen 3 + 7: auth cards ---------- */
   .connect-screen{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;}
-  .oauth-card{width:100%;max-width:420px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 20px 50px -22px rgba(0,0,0,.28);background:#fff;}
+  .oauth-card{width:100%;max-width:420px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-float);background:#fff;}
   .oauth-header{background:var(--brand);color:#fff;padding:20px 24px;display:flex;align-items:center;gap:12px;}
   .oauth-header.light{background:#fff;color:var(--ink);border-bottom:1px solid var(--line);}
-  .oauth-logo img{height:28px;width:28px;object-fit:contain;border-radius:6px;}
-  .cred-avatar{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.16);color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .oauth-header.light .cred-avatar{background:var(--brand);}
+  .oauth-logo img{height:28px;width:28px;object-fit:contain;border-radius:6px;background:#fff;}
+  .cred-avatar{width:30px;height:30px;border-radius:8px;background:#fff;color:var(--brand);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+  .cred-avatar img{width:78%;height:78%;object-fit:contain;}
+  .oauth-header.light .cred-avatar{background:var(--paper);border:1px solid var(--line);}
   .oauth-bankname{font-weight:700;font-size:16px;letter-spacing:-0.01em;flex:1;}
   .oauth-tag{font-size:10.5px;opacity:.75;font-weight:500;}
   .oauth-body{padding:24px;background:#fff;}
@@ -198,7 +213,7 @@
   .oauth-status.ok{color:var(--td-green-dark);}
   .cred-progress{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);}
   .cred-unlocks{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 6px;}
-  .cred-chip{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;}
+  .cred-chip{display:inline-flex;align-items:center;gap:7px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 5px;font-size:12px;font-weight:600;}
   .cred-blurb{font-size:12px;color:var(--ink-soft);line-height:1.5;margin:10px 0 2px;}
 
   /* ---------- Screen 4: scan ---------- */
@@ -208,17 +223,16 @@
   .progress-track{width:100%;max-width:480px;height:8px;background:var(--paper);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:14px;}
   .progress-track.dark{background:var(--terminal-line);border-color:var(--terminal-line);}
   .progress-fill{height:100%;width:0;background:var(--td-green);transition:width .1s linear;border-radius:999px;}
-  .scan-results{width:100%;max-width:640px;margin-top:20px;text-align:left;}
-  .scan-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fff;animation:rowIn .35s ease both;}
-  .tx-icon{font-size:21px;width:34px;text-align:center;flex-shrink:0;}
+  .scan-results{width:100%;max-width:860px;margin-top:20px;text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .scan-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;animation:rowIn .35s ease both;}
   .tx-info{flex:1;display:flex;flex-direction:column;text-align:left;min-width:0;}
-  .tx-name{font-weight:600;font-size:14px;}
-  .tx-sub{font-size:12px;color:var(--ink-soft);}
-  .tx-badge{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--paper);border:1px solid var(--line);padding:4px 8px;border-radius:6px;color:var(--ink-soft);white-space:nowrap;}
+  .tx-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tx-sub{font-size:12px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tx-badge{font-family:'JetBrains Mono',monospace;font-size:10.5px;background:var(--paper);border:1px solid var(--line);padding:4px 8px;border-radius:6px;color:var(--ink-soft);white-space:nowrap;}
 
   /* ---------- Screen 5: review ---------- */
-  .review-list{margin:24px 0;width:100%;}
-  .review-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;cursor:pointer;min-height:44px;transition:opacity .25s, background .15s;-webkit-tap-highlight-color:transparent;}
+  .review-list{margin:24px 0;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .review-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;cursor:pointer;min-height:44px;transition:opacity .25s, background .15s;-webkit-tap-highlight-color:transparent;background:#fff;}
   .review-row:hover{background:var(--paper);}
   .review-row.excluded{opacity:.45;}
   .review-check{width:22px;height:22px;accent-color:var(--td-green);cursor:pointer;flex-shrink:0;}
@@ -227,15 +241,15 @@
   .review-monthly{font-size:11.5px;color:var(--ink-soft);}
 
   /* ---------- Screen 6: access plan ---------- */
-  .plan-list{width:100%;max-width:680px;margin:22px 0 8px;}
-  .plan-row{display:flex;align-items:center;gap:14px;padding:11px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fff;animation:rowIn .35s ease both;}
-  .plan-note{font-size:12px;color:var(--ink-soft);}
-  .plan-summary{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 24px;}
+  .plan-list{width:100%;margin:22px 0 8px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .plan-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;animation:rowIn .35s ease both;}
+  .plan-note{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .plan-summary{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px;}
   .plan-chip{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--td-green-pale);color:var(--td-green-dark);border-radius:999px;padding:7px 14px;font-weight:600;animation:fadeIn .4s ease both;}
 
   /* ---------- Screen 8: consent ---------- */
   .consent-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
-  .consent-box{max-width:560px;width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 20px 50px -26px rgba(28,28,28,.35);padding:30px 34px;text-align:left;margin:20px 0 24px;}
+  .consent-box{max-width:560px;width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:var(--shadow-float);padding:30px 34px;text-align:left;margin:20px 0 24px;}
   .consent-box-title{font-weight:700;font-size:16px;margin-bottom:16px;}
   .consent-item{display:flex;gap:12px;padding:9px 0;font-size:13.5px;line-height:1.5;border-bottom:1px dashed var(--line);}
   .consent-item:last-of-type{border-bottom:none;}
@@ -247,7 +261,8 @@
   .agent-screen{display:flex;flex:1;min-height:0;}
   .agent-terminal{flex:0 0 55%;background:var(--terminal-bg);color:var(--terminal-text);padding:28px 28px 0;display:flex;flex-direction:column;border-right:1px solid var(--terminal-line);min-width:0;}
   .terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--terminal-dim);flex-shrink:0;}
-  .terminal-log{flex:1;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.85;padding-bottom:28px;max-height:420px;min-height:0;}
+  .terminal-log{flex:1;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.85;padding-bottom:28px;max-height:420px;min-height:0;transition:max-height .5s ease;}
+  .agent-terminal.has-panel .terminal-log{max-height:130px;}
   .term-line{white-space:pre-wrap;}
   .term-ts{color:var(--terminal-dim);opacity:.65;margin-right:9px;font-size:11px;}
   .term-dim{color:var(--terminal-dim);}
@@ -259,17 +274,18 @@
   .checklist-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--terminal-dim);margin-bottom:8px;}
   .checklist-counter{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-size:26px;font-weight:700;margin-bottom:12px;}
   .checklist-items{margin-top:18px;display:flex;flex-direction:column;}
-  .checklist-row{display:flex;align-items:center;gap:12px;padding:10px 8px;margin:0 -8px;border-bottom:1px solid var(--terminal-line);font-size:13px;border-radius:6px;transition:background .3s;}
+  .checklist-row{display:flex;align-items:center;gap:12px;padding:8px;margin:0 -8px;border-bottom:1px solid var(--terminal-line);font-size:13px;border-radius:6px;transition:background .3s;}
   .checklist-row.active{background:rgba(207,239,218,.06);}
+  .checklist-row .tile.sm{background:rgba(255,255,255,.06);border-color:transparent;}
   .glyph{width:18px;text-align:center;color:var(--terminal-dim);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
   .glyph-mid{color:#E8C97A;}
   .glyph-ok{color:#8FE8A8;}
   .glyph-warn{color:#E8C97A;}
   .agent-footer{padding:20px 28px;background:var(--terminal-bg);border-top:1px solid var(--terminal-line);display:flex;justify-content:space-between;align-items:center;color:var(--terminal-text);gap:16px;}
 
-  /* killer shot */
+  /* killer shot — fake Rogers portal */
   .killer-panel{max-height:0;overflow:hidden;transition:max-height .5s ease;flex-shrink:0;}
-  .killer-panel.expanded{max-height:400px;}
+  .killer-panel.expanded{max-height:460px;}
   .browser-mock{background:#e9edf0;border-radius:10px;overflow:hidden;position:relative;border:1px solid #cbd3d8;margin:10px 0;box-shadow:0 14px 34px -16px rgba(0,0,0,.55);}
   .browser-chrome{background:#dfe4e8;padding:8px 12px;display:flex;align-items:center;gap:6px;}
   .traffic{width:10px;height:10px;border-radius:50%;display:inline-block;}
@@ -278,20 +294,28 @@
   .traffic:nth-child(3){background:#28c840;}
   .browser-address{margin-left:10px;background:#fff;border-radius:6px;padding:4px 10px;font-size:11px;color:#555;font-family:'JetBrains Mono',monospace;flex:1;display:flex;align-items:center;gap:6px;}
   .browser-address svg{flex-shrink:0;color:#3d8a3d;}
-  .browser-page{background:#fff;min-height:250px;position:relative;}
-  .portal-header{background:#DA291C;color:#fff;padding:13px 20px;font-weight:700;font-size:15px;display:flex;justify-content:space-between;align-items:center;}
-  .portal-user{font-weight:400;font-size:10.5px;opacity:.85;}
-  .portal-body{display:flex;}
-  .portal-sidebar{width:130px;background:#F7F4F4;padding:14px 0;border-right:1px solid #EAE2E2;flex-shrink:0;}
-  .portal-nav-item{padding:9px 16px;font-size:11.5px;color:#5A4A4A;}
-  .portal-nav-item.active{background:#fff;color:#DA291C;font-weight:700;border-left:3px solid #DA291C;}
-  .portal-main{flex:1;padding:18px;min-width:0;}
-  .portal-panel-title{font-weight:700;font-size:13.5px;color:#2A1F1F;margin-bottom:14px;}
-  .portal-field-row{display:flex;align-items:center;gap:12px;background:#FAF7F7;border:1px solid #EAE2E2;border-radius:8px;padding:12px 14px;flex-wrap:wrap;}
-  .portal-field-label{font-size:11px;color:#856B6B;width:90px;flex-shrink:0;}
-  .portal-field-value{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#2A1F1F;min-width:120px;outline:none;}
-  .portal-meta{font-size:10.5px;color:#A38C8C;margin-top:10px;}
-  .portal-edit-btn, .portal-save-btn{background:#DA291C;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;min-height:auto;}
+  .browser-page{background:#F7F8F9;min-height:290px;position:relative;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;}
+  .portal-topbar{background:#fff;border-bottom:1px solid #E4E7EA;padding:10px 20px;display:flex;align-items:center;gap:22px;}
+  .portal-brand{font-weight:800;font-size:17px;color:#DA291C;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;}
+  .portal-brand img{height:20px;width:auto;object-fit:contain;}
+  .portal-nav{display:flex;gap:16px;font-size:11.5px;color:#55606A;flex:1;}
+  .portal-nav span.active{color:#1a1a1a;font-weight:700;border-bottom:2px solid #DA291C;padding-bottom:2px;}
+  .portal-user{font-size:10.5px;color:#55606A;}
+  .portal-crumb{padding:10px 20px 0;font-size:10.5px;color:#8A939B;}
+  .portal-grid{display:flex;padding:10px 20px 18px;gap:18px;}
+  .portal-side{width:150px;flex-shrink:0;}
+  .portal-nav-item{padding:8px 10px;font-size:11.5px;color:#55606A;border-radius:6px;}
+  .portal-nav-item.active{background:#fff;color:#DA291C;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  .portal-main{flex:1;min-width:0;}
+  .portal-panel-title{font-weight:700;font-size:14.5px;color:#1a1a1a;margin-bottom:2px;}
+  .portal-panel-sub{font-size:11px;color:#8A939B;margin-bottom:12px;}
+  .portal-card{background:#fff;border:1px solid #E4E7EA;border-radius:10px;padding:4px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .portal-field-row{display:flex;align-items:center;gap:12px;padding:11px 0;flex-wrap:wrap;}
+  .portal-field-row + .portal-field-row{border-top:1px solid #EEF0F2;}
+  .portal-field-label{font-size:11px;color:#8A939B;width:110px;flex-shrink:0;}
+  .portal-field-value{flex:1;font-size:12.5px;color:#1a1a1a;min-width:120px;outline:none;font-weight:600;}
+  .portal-meta{font-size:10.5px;color:#8A939B;margin-top:10px;}
+  .portal-edit-btn, .portal-save-btn{background:#DA291C;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;min-height:auto;font-weight:600;}
   .portal-save-btn{margin-top:12px;}
   .cursor-arrow{
     position:absolute;width:18px;height:18px;
@@ -301,11 +325,11 @@
   }
   .click-ripple{position:absolute;width:10px;height:10px;border:2px solid #DA291C;border-radius:50%;transform:translate(-50%,-50%);animation:ripple .5s ease-out;pointer-events:none;}
   @keyframes ripple{from{width:10px;height:10px;opacity:1;}to{width:44px;height:44px;opacity:0;}}
-  .toast{position:absolute;bottom:14px;left:50%;transform:translate(-50%,20px);background:var(--td-green);color:#fff;padding:9px 18px;border-radius:8px;font-size:12.5px;font-weight:600;opacity:0;transition:all .35s ease;box-shadow:0 8px 20px -8px rgba(0,138,0,.5);}
+  .toast{position:absolute;bottom:14px;left:50%;transform:translate(-50%,20px);background:#1a7f37;color:#fff;padding:9px 18px;border-radius:8px;font-size:12.5px;font-weight:600;opacity:0;transition:all .35s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.4);}
   .toast.show{opacity:1;transform:translate(-50%,0);}
 
   /* ---------- Screen 10: signature ---------- */
-  .approval-card{display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #EAD9B8;border-radius:10px;background:var(--amber-pale);margin:20px 0 4px;max-width:520px;}
+  .approval-card{display:flex;gap:14px;align-items:center;padding:14px 16px;border:1px solid #EAD9B8;border-radius:10px;background:var(--amber-pale);margin:20px 0 4px;max-width:520px;}
   .sign-cols{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start;margin-top:8px;}
   .doc-preview{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;max-width:440px;box-shadow:0 12px 32px -20px rgba(28,28,28,.35);margin:14px 0 4px;}
   .doc-preview-title{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:12px;}
@@ -329,11 +353,11 @@
   @keyframes scaleIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
   .stat-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0 4px;}
   .stat-chip{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--td-green-pale);color:var(--td-green-dark);border-radius:999px;padding:6px 14px;font-weight:600;}
-  .done-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:640px;margin:26px 0;text-align:left;}
-  .done-summary-grid.single{grid-template-columns:1fr;max-width:420px;}
+  .done-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:680px;margin:26px 0;text-align:left;}
+  .done-summary-grid.single{grid-template-columns:1fr;max-width:440px;}
   .done-summary-col{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px;}
   .done-summary-title{font-weight:700;font-size:13px;color:var(--td-green-dark);margin-bottom:10px;}
-  .done-row{font-size:13px;padding:6px 0;}
+  .done-row{font-size:13px;padding:5px 0;display:flex;align-items:center;gap:10px;}
   .pdf-card{border:1px solid var(--line);border-radius:12px;padding:18px 22px;background:#fff;display:flex;align-items:center;gap:16px;max-width:560px;width:100%;text-align:left;box-shadow:0 12px 30px -22px rgba(28,28,28,.3);}
   .pdf-icon{width:44px;height:44px;border-radius:10px;background:var(--amber-pale);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
   .pdf-card-text{flex:1;min-width:0;}
@@ -352,7 +376,7 @@
     .landing h1{font-size:34px;}
     .agent-screen{flex-direction:column;}
     .agent-terminal, .agent-checklist{flex:none;border-right:none;}
-    .done-summary-grid{grid-template-columns:1fr;}
+    .done-summary-grid, .scan-results, .review-list, .plan-list{grid-template-columns:1fr;}
     .sign-cols{grid-template-columns:1fr;}
     .screen-pad{padding:36px 24px;}
   }
@@ -370,8 +394,8 @@
 
 <header class="chrome-bar">
   <div class="chrome-left">
-    <span class="logo-tap" id="logoTap"><img src="assets/logos/td.svg" alt="TD" width="26" height="26" id="logoImg"></span>
-    <span class="wordmark">SwitchEasy</span>
+    <span class="logo-tap" id="logoTap"><img src="assets/logos/switcheasy.png" alt="SwitchEasy" id="logoImg"></span>
+    <span class="wordmark">SwitchEasy <small>by TD</small></span>
     <span class="proto-pill">TD Open Banking</span>
   </div>
   <button class="restart-btn" id="restartBtn" type="button">Restart</button>
@@ -391,7 +415,7 @@
 </div>
 
 <script type="module">
-import { banks, personas, timings, agentLogLines, credentialGroups, accessInfo } from './config.js';
+import { banks, personas, timings, agentLogLines, credentialGroups, accessInfo, appLogo } from './config.js';
 
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const T = prefersReduced
@@ -400,7 +424,6 @@ const T = prefersReduced
 
 const LOCK_SVG = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
 const CURSOR_SVG = '<svg width="18" height="18" viewBox="0 0 20 20"><path d="M3 1 L3 16.2 L7.1 12.6 L9.6 18.4 L12.3 17.2 L9.8 11.5 L15.2 11 Z" fill="#1a1a1a" stroke="#fff" stroke-width="1.1" stroke-linejoin="round"/></svg>';
-const personaIcons = { newcomer: '🧳', switcher: '🔁', smallBiz: '☕' };
 
 const els = {
   logoTap: document.getElementById('logoTap'),
@@ -414,9 +437,49 @@ const els = {
   hudSkip: document.getElementById('hudSkip'),
 };
 
-els.logoImg.addEventListener('error', () => {
-  els.logoImg.replaceWith(Object.assign(document.createElement('div'), { className: 'bank-fallback small', textContent: 'TD' }));
-}, { once: true });
+/* ---------- image fallback system ----------
+ * Any <img data-fb="path"> retries that path once on error;
+ * after that, data-emoji swaps in an emoji span, or data-letter a lettered tile.
+ * Handled by one delegated capture listener so dynamically added rows work too. */
+function handleImgError(img) {
+  if (img.dataset.fb) {
+    const fb = img.dataset.fb;
+    img.removeAttribute('data-fb');
+    img.src = fb;
+    return;
+  }
+  if ('emoji' in img.dataset) {
+    if (!img.dataset.emoji) { img.remove(); return; } // decorative — drop silently
+    const span = document.createElement('span');
+    span.className = 'tile-emoji';
+    span.textContent = img.dataset.emoji;
+    img.replaceWith(span);
+    return;
+  }
+  if (img.dataset.letter) {
+    const div = document.createElement('div');
+    div.className = img.dataset.letterClass || 'bank-fallback';
+    div.textContent = img.dataset.letter;
+    img.replaceWith(div);
+  }
+}
+document.addEventListener('error', e => {
+  if (e.target instanceof HTMLImageElement) handleImgError(e.target);
+}, true);
+
+els.logoImg.dataset.fb = appLogo.fallback;
+els.logoImg.dataset.letter = 'TD';
+els.logoImg.dataset.letterClass = 'bank-fallback small';
+if (appLogo.src) els.logoImg.src = appLogo.src;
+
+// biller/persona icon tile: PNG first, emoji fallback
+function tile(entity, size) {
+  const cls = 'tile' + (size ? ' ' + size : '');
+  if (entity.logo || entity.img) {
+    return `<span class="${cls}"><img src="${entity.logo || entity.img}" alt="" data-emoji="${entity.icon}"></span>`;
+  }
+  return `<span class="${cls}"><span class="tile-emoji">${entity.icon}</span></span>`;
+}
 
 els.screenRoot.style.transition = `opacity ${timings.screenFade / 2}ms ease, transform ${timings.screenFade / 2}ms ease`;
 
@@ -527,15 +590,6 @@ function advanceFromHud() {
   }
 }
 
-function attachImgFallback(img) {
-  img.addEventListener('error', () => {
-    const div = document.createElement('div');
-    div.className = 'bank-fallback';
-    div.textContent = img.dataset.fallbackLetter || '?';
-    img.replaceWith(div);
-  }, { once: true });
-}
-
 function selectedItems() { return state.selectedTx.filter(t => t.selected); }
 function credGroupsNeeded() {
   const present = new Set(selectedItems().map(t => t.access));
@@ -548,27 +602,27 @@ function renderLanding() {
   els.screenRoot.innerHTML = `
     <div class="screen-pad landing">
       <div class="landing-mark">
-        <img src="assets/logos/td.svg" alt="TD" id="landingLogo">
+        <img src="${appLogo.src}" alt="SwitchEasy" data-fb="${appLogo.fallback}" data-letter="TD">
         <span class="landing-wordmark">SwitchEasy</span>
       </div>
       <h1>Switch banks without the busywork.</h1>
       <p class="subcopy">SwitchEasy is TD's AI agent that moves your entire financial life — bills, subscriptions, deposits and payees — from your old bank to TD. You approve; it does the work.</p>
+      <div class="trust-row">
+        ${LOCK_SVG} Read-only bank access
+        <span class="sep">·</span> You approve every change
+        <span class="sep">·</span> Powered by TD Open Banking
+      </div>
       <div class="landing-picker-label">Who's switching today?</div>
       <div class="scenario-grid">
         ${Object.entries(personas).map(([key, p], i) => `
           <button type="button" class="scenario-card" data-key="${key}" style="animation-delay:${i * 80}ms">
-            <div class="scenario-icon">${personaIcons[key] || '👤'}</div>
+            ${tile(p, 'lg')}
             <div class="scenario-card-label">${p.label}</div>
             <div class="scenario-card-tagline">${p.tagline}</div>
             <div class="scenario-card-cta">Get started →</div>
           </button>`).join('')}
       </div>
     </div>`;
-
-  const landingLogo = document.getElementById('landingLogo');
-  landingLogo.addEventListener('error', () => {
-    landingLogo.replaceWith(Object.assign(document.createElement('div'), { className: 'bank-fallback', textContent: 'TD' }));
-  }, { once: true });
 
   els.screenRoot.querySelectorAll('.scenario-card').forEach(card => {
     card.addEventListener('click', () => {
@@ -637,7 +691,7 @@ function renderInstitution() {
           <button type="button" class="bank-card" data-id="${b.id}" style="--card-brand:${b.brand}">
             <div class="bank-logo-wrap">
               ${b.logo
-                ? `<img src="${b.logo}" alt="${b.name}" class="bank-logo" data-fallback-letter="${b.name[0]}">`
+                ? `<img src="${b.logo}" alt="${b.name}" class="bank-logo" data-fb="${b.logoFallback || ''}" data-letter="${b.name[0]}">`
                 : `<div class="bank-fallback">${b.name[0]}</div>`}
             </div>
             <div class="bank-name">${b.name}</div>
@@ -648,8 +702,6 @@ function renderInstitution() {
       </div>
       <button type="button" class="btn-primary" id="contBtn" disabled>Continue →</button>
     </div>`;
-
-  els.screenRoot.querySelectorAll('img.bank-logo').forEach(attachImgFallback);
 
   const contBtn = els.screenRoot.querySelector('#contBtn');
   const otherWrap = els.screenRoot.querySelector('#otherWrap');
@@ -683,7 +735,7 @@ function renderConnect() {
       <div class="oauth-card" style="--brand:${bank.brand}">
         <div class="oauth-header">
           <div class="oauth-logo">${bank.logo
-            ? `<img src="${bank.logo}" alt="${state.bankName}" id="oauthLogoImg" data-fallback-letter="${state.bankName[0]}">`
+            ? `<img src="${bank.logo}" alt="${state.bankName}" data-fb="${bank.logoFallback || ''}" data-letter="${state.bankName[0]}" data-letter-class="bank-fallback small">`
             : `<div class="bank-fallback small">${state.bankName[0]}</div>`}</div>
           <div class="oauth-bankname">${state.bankName} Online</div>
         </div>
@@ -699,9 +751,6 @@ function renderConnect() {
         </div>
       </div>
     </div>`;
-
-  const oauthLogoImg = els.screenRoot.querySelector('#oauthLogoImg');
-  if (oauthLogoImg) attachImgFallback(oauthLogoImg);
 
   const user = els.screenRoot.querySelector('#oauthUser');
   const pass = els.screenRoot.querySelector('#oauthPass');
@@ -737,7 +786,7 @@ function renderScan() {
       <div class="scan-label" id="scanLabel">transactions scanned at ${state.bankName}</div>
       <div class="progress-track"><div class="progress-fill" id="scanFill"></div></div>
       <div class="scan-results" id="scanResults" hidden></div>
-      <button type="button" class="btn-primary" id="reviewBtn" hidden>Review & migrate →</button>
+      <button type="button" class="btn-primary" id="reviewBtn" hidden style="margin-top:22px;">Review & migrate →</button>
     </div>`;
 
   const counterEl = els.screenRoot.querySelector('#scanCounter');
@@ -772,7 +821,7 @@ function renderScan() {
         const row = document.createElement('div');
         row.className = 'scan-row';
         row.innerHTML = `
-          <span class="tx-icon">${t.icon}</span>
+          ${tile(t)}
           <div class="tx-info"><div class="tx-name">${t.name}</div><div class="tx-sub">${t.sub}</div></div>
           <span class="tx-badge">${t.cat}</span>`;
         resultsEl.appendChild(row);
@@ -797,7 +846,7 @@ function renderReview() {
         ${state.selectedTx.map((t, i) => `
           <label class="review-row ${t.selected ? '' : 'excluded'}">
             <input type="checkbox" class="review-check" data-i="${i}" ${t.selected ? 'checked' : ''}>
-            <span class="tx-icon">${t.icon}</span>
+            ${tile(t)}
             <span class="tx-info"><span class="tx-name">${t.name}</span><span class="tx-sub">${t.sub}</span></span>
             <span class="tx-badge">${t.cat}</span>
           </label>`).join('')}
@@ -871,7 +920,7 @@ function renderAccessPlan() {
       const row = document.createElement('div');
       row.className = 'plan-row';
       row.innerHTML = `
-        <span class="tx-icon">${t.icon}</span>
+        ${tile(t)}
         <span class="tx-info"><span class="tx-name">${t.name}</span><span class="plan-note">${t.accessNote || info.note}</span></span>
         <span class="tx-badge">${info.badge}</span>`;
       planList.appendChild(row);
@@ -919,13 +968,13 @@ function renderCredentials() {
       <span class="cred-progress">Access ${state.credIndex + 1} of ${state.credQueue.length}</span>
       <div class="oauth-card" style="--brand:${g.brand}">
         <div class="oauth-header ${g.light ? 'light' : ''}">
-          <div class="cred-avatar">${g.name[0]}</div>
+          <div class="cred-avatar">${g.logo ? `<img src="${g.logo}" alt="" data-emoji="${g.name[0]}">` : g.name[0]}</div>
           <div class="oauth-bankname">${g.name}</div>
           <div class="oauth-tag">${g.tag}</div>
         </div>
         <div class="oauth-body">
           <div class="cred-unlocks">
-            ${covered.map(t => `<span class="cred-chip">${t.icon} ${t.name}</span>`).join('')}
+            ${covered.map(t => `<span class="cred-chip">${tile(t, 'sm')} ${t.name}</span>`).join('')}
           </div>
           <p class="cred-blurb">${g.blurb}</p>
           <label class="field-label">${g.field}</label>
@@ -1016,7 +1065,7 @@ function renderAgent() {
   const items = selectedItems();
   els.screenRoot.innerHTML = `
     <div class="agent-screen">
-      <div class="agent-terminal">
+      <div class="agent-terminal" id="agentTerminal">
         <div class="terminal-header">
           <span>⚡ agent_core.log</span>
           <span class="pill-badge dark" id="livePill"><span class="dot"></span> reasoning live</span>
@@ -1031,6 +1080,7 @@ function renderAgent() {
           ${items.map((t, i) => `
             <div class="checklist-row" id="checkrow-${i}">
               <span class="glyph" id="glyph-${i}">○</span>
+              ${tile(t, 'sm')}
               <span class="check-name">${t.name}</span>
             </div>`).join('')}
         </div>
@@ -1041,6 +1091,7 @@ function renderAgent() {
       <button type="button" class="btn-primary" id="continueBtn">Continue →</button>
     </div>`;
 
+  const terminal = els.screenRoot.querySelector('#agentTerminal');
   const termLog = els.screenRoot.querySelector('#termLog');
   const cursorEl = els.screenRoot.querySelector('.term-cursor');
   const livePill = els.screenRoot.querySelector('#livePill');
@@ -1118,7 +1169,9 @@ function renderAgent() {
   }
 
   function runKillerShot(tx, cb) {
-    const domain = tx.name.toLowerCase().includes('business') ? 'rogers.com/business/payment-method' : 'rogers.com/account/payment-method';
+    const isBiz = tx.name.toLowerCase().includes('business');
+    const domain = isBiz ? 'rogers.com/business/billing/payment-method' : 'rogers.com/myrogers/billing/payment-method';
+    const monthly = (tx.sub.match(/\$[\d.,]+/) || ['$94.99'])[0];
     const panel = document.createElement('div');
     panel.className = 'killer-panel';
     panel.innerHTML = `
@@ -1128,23 +1181,40 @@ function renderAgent() {
           <div class="browser-address">${LOCK_SVG} ${domain}</div>
         </div>
         <div class="browser-page">
-          <div class="portal-header"><span>Rogers</span><span class="portal-user">Signed in · via SwitchEasy agent</span></div>
-          <div class="portal-body">
-            <div class="portal-sidebar">
-              <div class="portal-nav-item">Overview</div>
-              <div class="portal-nav-item active">Payment Method</div>
-              <div class="portal-nav-item">Billing History</div>
-              <div class="portal-nav-item">Support</div>
+          <div class="portal-topbar">
+            <span class="portal-brand"><img src="assets/billers/rogers.png" alt="" data-emoji="">Rogers</span>
+            <nav class="portal-nav"><span>Internet</span><span>TV</span><span>Mobile</span><span class="active">MyRogers</span></nav>
+            <span class="portal-user">Signed in · via SwitchEasy agent</span>
+          </div>
+          <div class="portal-crumb">MyRogers &rsaquo; Billing & payments &rsaquo; Payment method</div>
+          <div class="portal-grid">
+            <div class="portal-side">
+              <div class="portal-nav-item">Account overview</div>
+              <div class="portal-nav-item active">Payment method</div>
+              <div class="portal-nav-item">Billing history</div>
+              <div class="portal-nav-item">Usage</div>
+              <div class="portal-nav-item">Profile</div>
             </div>
             <div class="portal-main">
-              <div class="portal-panel-title">Pre-Authorized Payment Details</div>
-              <div class="portal-field-row">
-                <span class="portal-field-label">Bank account</span>
-                <span class="portal-field-value" id="portalValue">•••• •••• 8823 — ${state.bankName}</span>
-                <button type="button" class="portal-edit-btn" id="portalEdit">Edit</button>
+              <div class="portal-panel-title">Payment method</div>
+              <div class="portal-panel-sub">Your monthly bill is paid automatically with the account below.</div>
+              <div class="portal-card">
+                <div class="portal-field-row">
+                  <span class="portal-field-label">Bank account</span>
+                  <span class="portal-field-value" id="portalValue">•••• •••• 8823 — ${state.bankName}</span>
+                  <button type="button" class="portal-edit-btn" id="portalEdit">Edit</button>
+                </div>
+                <div class="portal-field-row">
+                  <span class="portal-field-label">Autopay</span>
+                  <span class="portal-field-value" style="color:#1a7f37;">On</span>
+                </div>
+                <div class="portal-field-row">
+                  <span class="portal-field-label">Next payment</span>
+                  <span class="portal-field-value">Aug 1, 2026 · ${monthly}</span>
+                </div>
               </div>
-              <button type="button" class="portal-save-btn" id="portalSave" hidden>Save</button>
-              <div class="portal-meta">${tx.name} · Last updated 14 Mar 2024</div>
+              <button type="button" class="portal-save-btn" id="portalSave" hidden>Save changes</button>
+              <div class="portal-meta">${tx.name} · Changes take effect on your next billing cycle.</div>
             </div>
           </div>
           <div class="cursor-arrow" id="cursorArrow">${CURSOR_SVG}</div>
@@ -1152,6 +1222,7 @@ function renderAgent() {
         </div>
       </div>`;
     termLog.parentElement.insertBefore(panel, termLog);
+    terminal.classList.add('has-panel');
     requestAnimationFrame(() => panel.classList.add('expanded'));
 
     const cursor = panel.querySelector('#cursorArrow');
@@ -1176,6 +1247,7 @@ function renderAgent() {
                   toast.classList.add('show');
                   schedule(() => {
                     panel.classList.remove('expanded');
+                    terminal.classList.remove('has-panel');
                     schedule(() => { panel.remove(); cb(); }, 500);
                   }, 1200);
                 }, 150);
@@ -1251,7 +1323,7 @@ function renderSignature() {
       <h1>One needs your sign-off</h1>
       ${flaggedItems.map(t => `
         <div class="approval-card">
-          <span class="tx-icon">${t.icon}</span>
+          ${tile(t)}
           <span class="tx-info"><span class="tx-name">${t.name}</span><span class="tx-sub">${t.sub}</span></span>
         </div>`).join('')}
       <p class="subcopy" style="margin-top:16px;">Employers require a signed form to change payroll deposits. The agent has pre-filled it — it just needs your signature.</p>
@@ -1382,12 +1454,12 @@ function renderDone() {
       <div class="done-summary-grid ${flagged > 0 ? '' : 'single'}">
         <div class="done-summary-col">
           <div class="done-summary-title">Moved ✓</div>
-          ${state.selectedTx.filter(t => t.selected && !t.needsApproval).map(t => `<div class="done-row">${t.icon} ${t.name}</div>`).join('')}
+          ${state.selectedTx.filter(t => t.selected && !t.needsApproval).map(t => `<div class="done-row">${tile(t, 'sm')} ${t.name}</div>`).join('')}
         </div>
         ${flagged > 0 ? `
         <div class="done-summary-col">
           <div class="done-summary-title">Signed & sent ✓</div>
-          ${state.selectedTx.filter(t => t.selected && t.needsApproval).map(t => `<div class="done-row">${t.icon} ${t.name}</div>`).join('')}
+          ${state.selectedTx.filter(t => t.selected && t.needsApproval).map(t => `<div class="done-row">${tile(t, 'sm')} ${t.name}</div>`).join('')}
         </div>` : ''}
       </div>
       ${flagged > 0 ? `

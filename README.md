@@ -41,7 +41,24 @@ All editable content lives in `config.js`:
 - `timings` — every animation/timing value in the app (scan speed, terminal pacing, cursor speed, etc.), in milliseconds.
 - `agentLogLines(tx)` — the terminal "voice" per transaction. Edit the copy here without touching the animation engine in `index.html`.
 
-Bank/institution logos live in `assets/logos/`. If a logo file is missing or fails to load, the app falls back to a lettered avatar tile automatically — it will never show a broken image icon.
+### Dropping in real logos (PNGs)
+
+Every image is optional — add a PNG at the right path and it appears
+automatically; if the file is missing the app falls back to the emoji (for
+billers/personas) or a lettered tile (for banks). It never shows a broken
+image icon.
+
+| Path | Used for |
+|---|---|
+| `assets/logos/switcheasy.png` | app mark in the chrome bar and on the landing page (falls back to `td.svg`) |
+| `assets/logos/rbc.png`, `scotiabank.png`, `bmo.png`, `cibc.png` | bank tiles + the fake OAuth header (falls back to the bundled `.svg`, then a letter) |
+| `assets/personas/newcomer.png`, `switcher.png`, `smallbiz.png` | the three landing cards |
+| `assets/billers/rogers.png`, `fido.png`, `netflix.png`, `spotify.png`, `goodlife.png`, `hydro-one.png`, `toronto-hydro.png`, `td-insurance.png`, `manulife.png`, `telus.png`, `cra.png`, `landlord.png`, `td-payroll.png`, `google.png`, `sysco.png`, `lease.png`, `wagepoint.png`, `square.png`, `enbridge.png`, `wsib.png`, `payroll.png` | every biller row, credential card, checklist chip and summary; `rogers.png` also appears in the fake portal header |
+
+Square-ish PNGs with transparent backgrounds around 128–256 px work best —
+they're rendered inside a 40 px tile at 72 % scale, so anything crisp at
+~30 px is fine. The exact path for each biller is its `logo` field in
+`config.js`, so you can rename/repoint freely.
 
 ## iPad recording workflow
 
