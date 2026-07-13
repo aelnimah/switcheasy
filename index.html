@@ -9,7 +9,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23008A00'/%3E%3Ctext x='50' y='68' font-family='Arial' font-weight='700' font-size='58' fill='white' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root{
@@ -19,15 +19,18 @@
     --terminal-bg:#0C1710; --terminal-line:#1B2E22; --terminal-text:#CFEFDA; --terminal-dim:#5E8770;
   }
   *,*::before,*::after{box-sizing:border-box;}
+  [hidden]{display:none !important;}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--paper); color:var(--ink);
+    background:radial-gradient(1400px 700px at 50% -12%, #EDF3ED 0%, var(--paper) 60%) fixed;
+    color:var(--ink);
     font-family:'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
     display:flex; flex-direction:column;
   }
-  h1{font-weight:700;font-size:34px;line-height:1.15;margin:0 0 16px;color:var(--ink);}
+  ::selection{background:var(--td-green-pale);}
+  h1{font-weight:700;font-size:36px;line-height:1.12;letter-spacing:-0.02em;margin:0 0 16px;color:var(--ink);}
   p{margin:0;}
   button{font-family:inherit;min-height:44px;}
   img{max-width:100%;display:block;}
@@ -35,11 +38,12 @@
   /* ---------- chrome bar ---------- */
   .chrome-bar{
     display:flex;align-items:center;justify-content:space-between;
-    padding:0 24px;height:60px;background:var(--surface);
+    padding:0 24px;height:62px;background:var(--surface);
+    border-top:3px solid var(--td-green);
     border-bottom:1px solid var(--line);flex-shrink:0;
   }
   .chrome-left{display:flex;align-items:center;gap:12px;}
-  .logo-tap{display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border-radius:8px;}
+  .logo-tap{display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent;}
   .logo-tap img{width:26px;height:26px;}
   .wordmark{font-weight:700;font-size:18px;letter-spacing:-0.01em;}
   .proto-pill{
@@ -49,23 +53,25 @@
   .restart-btn{
     background:transparent;border:1px solid var(--line);border-radius:8px;
     padding:9px 18px;font-weight:600;font-size:13px;color:var(--ink);cursor:pointer;
-    transition:background .15s;
+    transition:background .15s, border-color .15s;
   }
-  .restart-btn:hover{background:var(--paper);}
+  .restart-btn:hover{background:var(--paper);border-color:#c3d3c3;}
   .restart-btn:active{transform:scale(.97);}
 
   /* ---------- step rail ---------- */
-  .rail{display:flex;padding:16px 40px 14px;background:var(--paper);border-bottom:1px solid var(--line);flex-shrink:0;}
-  .rail-segment{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;}
+  .rail{display:flex;padding:16px 40px 14px;background:transparent;border-bottom:1px solid var(--line);flex-shrink:0;}
+  .rail-segment{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;}
   .rail-segment:not(:last-child)::after{
     content:'';position:absolute;top:5px;left:50%;width:100%;height:2px;background:var(--line);z-index:0;
+    transition:background .4s;
   }
   .rail-segment.completed:not(:last-child)::after{background:var(--td-green);}
-  .rail-dot{width:10px;height:10px;border-radius:50%;background:var(--line);position:relative;z-index:1;transition:background .3s, box-shadow .3s;}
-  .rail-label{font-size:12px;font-weight:600;color:var(--ink-soft);transition:color .3s;}
+  .rail-dot{width:10px;height:10px;border-radius:50%;background:var(--line);position:relative;z-index:1;
+    box-shadow:0 0 0 3px var(--paper);transition:background .3s, box-shadow .3s;}
+  .rail-label{font-size:12px;font-weight:600;letter-spacing:.01em;color:var(--ink-soft);transition:color .3s;}
   .rail-segment.completed .rail-dot{background:var(--td-green);}
   .rail-segment.completed .rail-label{color:var(--td-green-dark);}
-  .rail-segment.current .rail-dot{background:var(--td-green);box-shadow:0 0 0 4px var(--td-green-pale);}
+  .rail-segment.current .rail-dot{background:var(--td-green);box-shadow:0 0 0 3px var(--paper), 0 0 0 6px var(--td-green-pale);}
   .rail-segment.current .rail-label{color:var(--ink);font-weight:700;}
 
   /* ---------- stage / device ---------- */
@@ -73,7 +79,7 @@
   #device{
     max-width:1080px;width:100%;margin:0 auto;background:var(--surface);
     border:1px solid var(--line);border-radius:20px;
-    box-shadow:0 20px 60px -24px rgba(28,28,28,.18);
+    box-shadow:0 1px 2px rgba(28,28,28,.04), 0 24px 64px -32px rgba(28,28,28,.25);
     overflow:hidden;position:relative;display:flex;flex-direction:column;min-height:640px;
     transition:background .4s ease, border-color .4s ease;
   }
@@ -82,21 +88,22 @@
   .screen-pad{flex:1;display:flex;flex-direction:column;padding:52px 60px;}
 
   .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--td-green-dark);font-weight:600;margin-bottom:14px;text-transform:uppercase;}
-  .subcopy{color:var(--ink-soft);font-size:15px;line-height:1.6;max-width:520px;}
+  .subcopy{color:var(--ink-soft);font-size:15px;line-height:1.6;max-width:540px;}
 
   .pill-badge{display:inline-flex;align-items:center;gap:8px;background:var(--td-green-pale);color:var(--td-green-dark);border-radius:999px;padding:6px 14px;font-weight:600;font-size:13px;margin-bottom:20px;width:fit-content;}
   .pill-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--td-green);animation:pulse 1.6s infinite;}
-  .pill-badge.dark{background:rgba(207,239,218,.08);color:var(--terminal-text);}
+  .pill-badge.dark{background:rgba(207,239,218,.08);color:var(--terminal-text);margin-bottom:0;}
   .pill-badge.dark .dot{background:#5CF07A;}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(1.35);}}
 
   .btn-primary{
     background:var(--td-green);color:#fff;border:none;border-radius:8px;
     padding:14px 26px;font-weight:600;font-size:15px;cursor:pointer;
-    transition:background .15s, transform .1s; width:fit-content;
+    transition:background .15s, transform .12s, box-shadow .15s; width:fit-content;
+    -webkit-tap-highlight-color:transparent;
   }
-  .btn-primary:hover:not(:disabled){background:var(--td-green-dark);}
-  .btn-primary:active:not(:disabled){transform:scale(.98);}
+  .btn-primary:hover:not(:disabled){background:var(--td-green-dark);box-shadow:0 10px 24px -12px rgba(0,138,0,.6);transform:translateY(-1px);}
+  .btn-primary:active:not(:disabled){transform:scale(.98);box-shadow:none;}
   .btn-primary:disabled{background:var(--line);color:var(--ink-soft);cursor:not-allowed;}
 
   input[type="text"], input[type="password"]{
@@ -104,9 +111,9 @@
     font-size:15px;font-family:inherit;min-height:44px;background:#fff;color:var(--ink);
   }
   input:focus{outline:2px solid var(--td-green);outline-offset:1px;border-color:var(--td-green);}
-  .field-label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin:14px 0 6px;}
+  .field-label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin:14px 0 6px;letter-spacing:.02em;}
 
-  .mono{font-family:'JetBrains Mono',monospace;}
+  .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;}
   .fade-in{animation:fadeIn .4s ease both;}
   @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 
@@ -114,25 +121,30 @@
   .scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px;}
   .scenario-card{
     text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;
-    padding:26px 22px;cursor:pointer;transition:all .2s;
+    padding:26px 22px;cursor:pointer;transition:border-color .2s, transform .2s, box-shadow .2s;
+    animation:rowIn .45s ease both;display:flex;flex-direction:column;
+    -webkit-tap-highlight-color:transparent;
   }
-  .scenario-card:hover{border-color:#c3d3c3;transform:translateY(-2px);}
+  .scenario-card:hover{border-color:#c3d3c3;transform:translateY(-3px);box-shadow:0 16px 32px -22px rgba(28,28,28,.3);}
   .scenario-card.selected{border-color:var(--td-green);background:var(--td-green-pale);}
-  .scenario-card-label{font-weight:700;font-size:18px;margin-bottom:8px;}
-  .scenario-card-tagline{color:var(--ink-soft);font-size:13.5px;margin-bottom:18px;line-height:1.5;}
-  .mono-badge{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:5px 10px;display:inline-block;color:var(--ink-soft);}
+  .scenario-icon{width:46px;height:46px;border-radius:12px;background:var(--td-green-pale);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;}
+  .scenario-card.selected .scenario-icon{background:#fff;}
+  .scenario-card-label{font-weight:700;font-size:18px;letter-spacing:-0.01em;margin-bottom:8px;}
+  .scenario-card-tagline{color:var(--ink-soft);font-size:13.5px;margin-bottom:18px;line-height:1.5;flex:1;}
+  .mono-badge{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:5px 10px;display:inline-block;color:var(--ink-soft);width:fit-content;}
+  .scenario-card.selected .mono-badge{background:#fff;color:var(--td-green-dark);border-color:var(--td-green);}
 
   /* ---------- Screen 1: welcome ---------- */
   .welcome-screen{flex:1;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;}
-  .welcome-left h1{margin-top:6px;}
-  .stat-row{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink);margin:24px 0 28px;}
-  .stat-row .sep{color:var(--line);}
-  .ledger-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;}
-  .ledger-title{font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:12px;}
-  .ledger-row{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px;}
+  .welcome-left h1{margin-top:6px;font-size:46px;}
+  .stat-row{display:flex;gap:9px;flex-wrap:wrap;font-size:12px;font-weight:600;color:var(--ink);margin:24px 0 30px;white-space:nowrap;}
+  .stat-row .sep{color:var(--line);font-weight:400;}
+  .ledger-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8);}
+  .ledger-title{font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:12px;letter-spacing:.02em;}
+  .ledger-row{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px;min-width:0;}
   .ledger-row:last-of-type{border-bottom:none;}
-  .ledger-name{flex:1;font-weight:600;}
-  .ledger-sub{color:var(--ink-soft);font-size:11.5px;}
+  .ledger-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;}
+  .ledger-sub{color:var(--ink-soft);font-size:11.5px;white-space:nowrap;margin-left:auto;}
   .ledger-more{opacity:.5;padding-top:10px;font-size:12px;}
 
   /* ---------- Screen 2: institution ---------- */
@@ -140,10 +152,16 @@
   .bank-card{
     background:#fff;border:2px solid var(--line);border-radius:14px;padding:24px 16px;
     display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;
-    transition:border-color .2s, box-shadow .2s;min-height:130px;
+    transition:border-color .2s, box-shadow .2s, transform .2s;min-height:130px;position:relative;
+    -webkit-tap-highlight-color:transparent;
   }
-  .bank-card:hover{border-color:#c3d3c3;}
-  .bank-card.selected{border-color:var(--card-brand);box-shadow:0 10px 26px -12px var(--card-brand);}
+  .bank-card:hover{border-color:#c3d3c3;transform:translateY(-2px);}
+  .bank-card.selected{border-color:var(--card-brand);box-shadow:0 12px 30px -14px var(--card-brand);}
+  .bank-card.selected::after{
+    content:'✓';position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;
+    background:var(--card-brand);color:#fff;font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
   .bank-logo-wrap{width:100%;height:40px;display:flex;align-items:center;justify-content:center;}
   .bank-logo{height:36px;width:auto;object-fit:contain;}
   .bank-fallback{width:36px;height:36px;border-radius:8px;background:var(--ink-soft);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;}
@@ -153,55 +171,64 @@
 
   /* ---------- Screen 3: connect / OAuth ---------- */
   .connect-screen{flex:1;display:flex;justify-content:center;align-items:center;}
-  .oauth-card{width:100%;max-width:420px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 16px 40px -18px rgba(0,0,0,.2);}
+  .oauth-card{width:100%;max-width:420px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 20px 50px -22px rgba(0,0,0,.28);}
   .oauth-header{background:var(--brand);color:#fff;padding:20px 24px;display:flex;align-items:center;gap:12px;}
   .oauth-logo img{height:28px;width:28px;object-fit:contain;border-radius:6px;}
-  .oauth-bankname{font-weight:700;font-size:16px;}
+  .oauth-bankname{font-weight:700;font-size:16px;letter-spacing:-0.01em;}
   .oauth-body{padding:24px;background:#fff;}
+  .oauth-body input:focus{outline-color:var(--brand);border-color:var(--brand);}
   .oauth-btn{width:100%;background:var(--brand);}
-  .oauth-btn:hover:not(:disabled){filter:brightness(0.88);}
-  .consent-text{font-size:12px;color:var(--ink-soft);line-height:1.5;margin-top:16px;}
-  .oauth-status{margin-top:14px;min-height:18px;font-size:12px;color:var(--ink-soft);opacity:0;transition:opacity .3s;}
+  .oauth-btn:hover:not(:disabled){filter:brightness(0.88);background:var(--brand);box-shadow:none;transform:none;}
+  .consent-text{font-size:12px;color:var(--ink-soft);line-height:1.5;margin-top:16px;margin-bottom:16px;}
+  .oauth-secure{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--ink-soft);margin-top:14px;}
+  .oauth-status{margin-top:14px;min-height:18px;font-size:12px;color:var(--ink-soft);opacity:0;transition:opacity .3s;text-align:center;}
   .oauth-status.visible{opacity:1;}
   .oauth-status.ok{color:var(--td-green-dark);}
 
   /* ---------- Screen 4: scan ---------- */
   .scan-screen{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;}
-  .scan-counter{font-family:'JetBrains Mono',monospace;font-size:60px;font-weight:700;margin:20px 0;color:var(--td-green-dark);}
+  .scan-counter{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-size:62px;font-weight:700;margin:18px 0 2px;color:var(--td-green-dark);letter-spacing:-0.02em;}
+  .scan-label{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);margin-bottom:20px;}
   .progress-track{width:100%;max-width:480px;height:8px;background:var(--paper);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:14px;}
   .progress-track.dark{background:var(--terminal-line);border-color:var(--terminal-line);}
-  .progress-fill{height:100%;width:0;background:var(--td-green);transition:width .1s linear;}
+  .progress-fill{height:100%;width:0;background:var(--td-green);transition:width .1s linear;border-radius:999px;}
   .scan-results{width:100%;max-width:640px;margin-top:20px;text-align:left;}
   .scan-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fff;animation:rowIn .35s ease both;}
   @keyframes rowIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
   .tx-icon{font-size:21px;width:34px;text-align:center;flex-shrink:0;}
-  .tx-info{flex:1;display:flex;flex-direction:column;text-align:left;}
+  .tx-info{flex:1;display:flex;flex-direction:column;text-align:left;min-width:0;}
   .tx-name{font-weight:600;font-size:14px;}
   .tx-sub{font-size:12px;color:var(--ink-soft);}
   .tx-badge{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--paper);border:1px solid var(--line);padding:4px 8px;border-radius:6px;color:var(--ink-soft);white-space:nowrap;}
 
   /* ---------- Screen 5: review ---------- */
   .review-list{margin:24px 0;width:100%;}
-  .review-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;cursor:pointer;min-height:44px;}
+  .review-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;cursor:pointer;min-height:44px;transition:opacity .25s, background .15s;-webkit-tap-highlight-color:transparent;}
+  .review-row:hover{background:var(--paper);}
+  .review-row.excluded{opacity:.45;}
   .review-check{width:22px;height:22px;accent-color:var(--td-green);cursor:pointer;flex-shrink:0;}
-  .review-footer{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:18px 0 0;display:flex;justify-content:space-between;align-items:center;margin-top:auto;}
+  .review-footer{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:18px 0 0;display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:auto;}
+  .review-count-line{display:flex;flex-direction:column;gap:2px;}
+  .review-monthly{font-size:11.5px;color:var(--ink-soft);}
 
   /* ---------- Screen 6: agent at work ---------- */
-  .agent-screen{display:flex;flex:1;}
+  .agent-screen{display:flex;flex:1;min-height:0;}
   .agent-terminal{flex:0 0 55%;background:var(--terminal-bg);color:var(--terminal-text);padding:28px 28px 0;display:flex;flex-direction:column;border-right:1px solid var(--terminal-line);min-width:0;}
-  .terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--terminal-dim);}
-  .terminal-log{flex:1;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.85;padding-bottom:28px;max-height:400px;}
+  .terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--terminal-dim);flex-shrink:0;}
+  .terminal-log{flex:1;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.85;padding-bottom:28px;max-height:420px;min-height:0;}
   .term-line{white-space:pre-wrap;}
+  .term-ts{color:var(--terminal-dim);opacity:.65;margin-right:9px;font-size:11px;}
   .term-dim{color:var(--terminal-dim);}
   .term-ok{color:#8FE8A8;}
   .term-warn{color:#E8C97A;}
   .term-cursor{display:inline-block;animation:blink 1s step-end infinite;}
   @keyframes blink{50%{opacity:0;}}
-  .agent-checklist{flex:0 0 45%;background:var(--terminal-bg);padding:28px;color:var(--terminal-text);min-width:0;}
+  .agent-checklist{flex:0 0 45%;background:var(--terminal-bg);padding:28px;color:var(--terminal-text);min-width:0;overflow-y:auto;}
   .checklist-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--terminal-dim);margin-bottom:8px;}
-  .checklist-counter{font-size:26px;font-weight:700;margin-bottom:12px;}
+  .checklist-counter{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-size:26px;font-weight:700;margin-bottom:12px;}
   .checklist-items{margin-top:18px;display:flex;flex-direction:column;}
-  .checklist-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--terminal-line);font-size:13px;}
+  .checklist-row{display:flex;align-items:center;gap:12px;padding:10px 8px;margin:0 -8px;border-bottom:1px solid var(--terminal-line);font-size:13px;border-radius:6px;transition:background .3s;}
+  .checklist-row.active{background:rgba(207,239,218,.06);}
   .glyph{width:18px;text-align:center;color:var(--terminal-dim);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
   .glyph-mid{color:#E8C97A;}
   .glyph-ok{color:#8FE8A8;}
@@ -209,17 +236,19 @@
   .agent-footer{padding:20px 28px;background:var(--terminal-bg);border-top:1px solid var(--terminal-line);display:flex;justify-content:space-between;align-items:center;color:var(--terminal-text);gap:16px;}
 
   /* killer shot */
-  .killer-panel{max-height:0;overflow:hidden;transition:max-height .5s ease;}
-  .killer-panel.expanded{max-height:340px;}
-  .browser-mock{background:#e9edf0;border-radius:10px;overflow:hidden;position:relative;border:1px solid #cbd3d8;margin:10px 0;}
+  .killer-panel{max-height:0;overflow:hidden;transition:max-height .5s ease;flex-shrink:0;}
+  .killer-panel.expanded{max-height:400px;}
+  .browser-mock{background:#e9edf0;border-radius:10px;overflow:hidden;position:relative;border:1px solid #cbd3d8;margin:10px 0;box-shadow:0 14px 34px -16px rgba(0,0,0,.55);}
   .browser-chrome{background:#dfe4e8;padding:8px 12px;display:flex;align-items:center;gap:6px;}
   .traffic{width:10px;height:10px;border-radius:50%;display:inline-block;}
   .traffic:nth-child(1){background:#ff5f57;}
   .traffic:nth-child(2){background:#febc2e;}
   .traffic:nth-child(3){background:#28c840;}
-  .browser-address{margin-left:10px;background:#fff;border-radius:6px;padding:4px 10px;font-size:11px;color:#555;font-family:'JetBrains Mono',monospace;flex:1;}
+  .browser-address{margin-left:10px;background:#fff;border-radius:6px;padding:4px 10px;font-size:11px;color:#555;font-family:'JetBrains Mono',monospace;flex:1;display:flex;align-items:center;gap:6px;}
+  .browser-address svg{flex-shrink:0;color:#3d8a3d;}
   .browser-page{background:#fff;min-height:250px;position:relative;}
-  .portal-header{background:#1F4E79;color:#fff;padding:14px 20px;font-weight:700;font-size:15px;}
+  .portal-header{background:#1F4E79;color:#fff;padding:13px 20px;font-weight:700;font-size:15px;display:flex;justify-content:space-between;align-items:center;}
+  .portal-user{font-weight:400;font-size:10.5px;opacity:.8;}
   .portal-body{display:flex;}
   .portal-sidebar{width:130px;background:#F2F5F7;padding:14px 0;border-right:1px solid #E0E6EA;flex-shrink:0;}
   .portal-nav-item{padding:9px 16px;font-size:11.5px;color:#4A5A66;}
@@ -229,33 +258,47 @@
   .portal-field-row{display:flex;align-items:center;gap:12px;background:#F7F9FA;border:1px solid #E0E6EA;border-radius:8px;padding:12px 14px;flex-wrap:wrap;}
   .portal-field-label{font-size:11px;color:#6B7A85;width:90px;flex-shrink:0;}
   .portal-field-value{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#1F2A33;min-width:120px;outline:none;}
+  .portal-meta{font-size:10.5px;color:#8A98A3;margin-top:10px;}
   .portal-edit-btn, .portal-save-btn{background:#1F4E79;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;min-height:auto;}
   .portal-save-btn{margin-top:12px;}
   .cursor-arrow{
-    position:absolute;font-size:18px;color:#1a1a1a;
+    position:absolute;width:18px;height:18px;
     filter:drop-shadow(0 2px 3px rgba(0,0,0,.35));
     transition:left .9s cubic-bezier(.22,.61,.36,1), top .9s cubic-bezier(.22,.61,.36,1);
-    left:8%;top:55%;pointer-events:none;transform:rotate(-25deg);z-index:5;
+    left:8%;top:55%;pointer-events:none;z-index:5;
   }
   .click-ripple{position:absolute;width:10px;height:10px;border:2px solid #1F4E79;border-radius:50%;transform:translate(-50%,-50%);animation:ripple .5s ease-out;pointer-events:none;}
   @keyframes ripple{from{width:10px;height:10px;opacity:1;}to{width:44px;height:44px;opacity:0;}}
-  .toast{position:absolute;bottom:14px;left:50%;transform:translate(-50%,20px);background:var(--td-green);color:#fff;padding:9px 18px;border-radius:8px;font-size:12.5px;font-weight:600;opacity:0;transition:all .35s ease;}
+  .toast{position:absolute;bottom:14px;left:50%;transform:translate(-50%,20px);background:var(--td-green);color:#fff;padding:9px 18px;border-radius:8px;font-size:12.5px;font-weight:600;opacity:0;transition:all .35s ease;box-shadow:0 8px 20px -8px rgba(0,138,0,.5);}
   .toast.show{opacity:1;transform:translate(-50%,0);}
 
   /* ---------- Screen 7: approval ---------- */
-  .approval-card{display:flex;gap:14px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--amber-pale);margin:20px 0 4px;}
+  .approval-card{display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #EAD9B8;border-radius:10px;background:var(--amber-pale);margin:20px 0 4px;max-width:520px;}
+  .doc-preview{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 26px;max-width:440px;box-shadow:0 12px 32px -20px rgba(28,28,28,.35);margin:22px 0 4px;}
+  .doc-preview-title{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:12px;}
+  .doc-row{display:flex;justify-content:space-between;gap:16px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line);}
+  .doc-row-label{color:var(--ink-soft);}
+  .doc-row-value{font-weight:600;text-align:right;}
+  .doc-sig{margin-top:18px;border-bottom:1px solid var(--ink);padding-bottom:4px;min-height:26px;font-style:italic;font-weight:500;font-size:16px;color:var(--ink);}
+  .doc-sig-label{font-size:10.5px;color:var(--ink-soft);margin-top:4px;}
+  .doc-sig:empty::before{content:'\00a0';}
 
   /* ---------- Screen 8: done ---------- */
   .done-screen{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;}
-  .done-badge{width:72px;height:72px;border-radius:50%;background:var(--td-green);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;animation:scaleIn .4s ease both;}
+  .done-badge{width:72px;height:72px;border-radius:50%;background:var(--td-green);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;animation:scaleIn .4s ease both;box-shadow:0 14px 34px -14px rgba(0,138,0,.55);}
   @keyframes scaleIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .stat-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0 4px;}
+  .stat-chip{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--td-green-pale);color:var(--td-green-dark);border-radius:999px;padding:6px 14px;font-weight:600;}
   .done-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:640px;margin:26px 0;text-align:left;}
+  .done-summary-grid.single{grid-template-columns:1fr;max-width:420px;}
   .done-summary-col{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px;}
   .done-summary-title{font-weight:700;font-size:13px;color:var(--td-green-dark);margin-bottom:10px;}
   .done-row{font-size:13px;padding:6px 0;}
-  .pdf-card{border:1px solid var(--line);border-radius:12px;padding:20px 24px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:480px;width:100%;}
-  .pdf-card-title{font-weight:700;font-size:15px;}
-  .pdf-card-sub{font-size:13px;color:var(--ink-soft);}
+  .pdf-card{border:1px solid var(--line);border-radius:12px;padding:18px 22px;background:#fff;display:flex;align-items:center;gap:16px;max-width:560px;width:100%;text-align:left;box-shadow:0 12px 30px -22px rgba(28,28,28,.3);}
+  .pdf-icon{width:44px;height:44px;border-radius:10px;background:var(--amber-pale);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .pdf-card-text{flex:1;min-width:0;}
+  .pdf-card-title{font-weight:700;font-size:14.5px;}
+  .pdf-card-sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
 
   /* ---------- HUD ---------- */
   #hud{position:fixed;bottom:16px;left:16px;background:rgba(12,23,16,.92);color:#CFEFDA;font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 14px;border-radius:8px;z-index:999;}
@@ -265,6 +308,7 @@
   @media (max-width: 900px){
     .scenario-grid{grid-template-columns:1fr;}
     .welcome-screen{grid-template-columns:1fr;}
+    .welcome-left h1{font-size:38px;}
     .agent-screen{flex-direction:column;}
     .agent-terminal, .agent-checklist{flex:none;border-right:none;}
     .done-summary-grid{grid-template-columns:1fr;}
@@ -312,6 +356,10 @@ const T = prefersReduced
   ? Object.fromEntries(Object.entries(timings).map(([k, v]) => [k, Math.max(1, Math.round(v * 0.15))]))
   : timings;
 
+const LOCK_SVG = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
+const CURSOR_SVG = '<svg width="18" height="18" viewBox="0 0 20 20"><path d="M3 1 L3 16.2 L7.1 12.6 L9.6 18.4 L12.3 17.2 L9.8 11.5 L15.2 11 Z" fill="#1a1a1a" stroke="#fff" stroke-width="1.1" stroke-linejoin="round"/></svg>';
+const personaIcons = { newcomer: '🧳', switcher: '🔁', smallBiz: '☕' };
+
 const els = {
   logoTap: document.getElementById('logoTap'),
   logoImg: document.getElementById('logoImg'),
@@ -328,7 +376,7 @@ els.logoImg.addEventListener('error', () => {
   els.logoImg.replaceWith(Object.assign(document.createElement('div'), { className: 'bank-fallback small', textContent: 'TD' }));
 }, { once: true });
 
-els.screenRoot.style.transition = `opacity ${timings.screenFade / 2}ms ease`;
+els.screenRoot.style.transition = `opacity ${timings.screenFade / 2}ms ease, transform ${timings.screenFade / 2}ms ease`;
 
 function freshState() {
   return {
@@ -361,6 +409,7 @@ function updateHud() {
 function goTo(newScreen) {
   clearAllTimers();
   els.screenRoot.style.opacity = '0';
+  els.screenRoot.style.transform = 'translateY(6px)';
   schedule(() => {
     state.screen = newScreen;
     els.device.classList.toggle('terminal-mode', newScreen === 6);
@@ -369,6 +418,7 @@ function goTo(newScreen) {
     updateHud();
     screens[newScreen]();
     els.screenRoot.style.opacity = '1';
+    els.screenRoot.style.transform = 'translateY(0)';
   }, timings.screenFade / 2);
 }
 
@@ -438,8 +488,9 @@ function renderScenario() {
       <h1>Who's switching today?</h1>
       <p class="subcopy">Pick a scenario to see SwitchEasy handle it end to end.</p>
       <div class="scenario-grid">
-        ${Object.entries(personas).map(([key, p]) => `
-          <button type="button" class="scenario-card" data-key="${key}">
+        ${Object.entries(personas).map(([key, p], i) => `
+          <button type="button" class="scenario-card" data-key="${key}" style="animation-delay:${i * 80}ms">
+            <div class="scenario-icon">${personaIcons[key] || '👤'}</div>
             <div class="scenario-card-label">${p.label}</div>
             <div class="scenario-card-tagline">${p.tagline}</div>
             <div class="mono-badge">${p.transactions.length} recurring payments</div>
@@ -483,7 +534,7 @@ function renderWelcome() {
         </div>
         <div class="welcome-right">
           <div class="ledger-card mono">
-            <div class="ledger-title">${p.clientName}'s recurring payments</div>
+            <div class="ledger-title">${p.clientName} · recurring payments</div>
             ${preview.map(t => `
               <div class="ledger-row">
                 <span>${t.icon}</span>
@@ -562,11 +613,12 @@ function renderConnect() {
         </div>
         <div class="oauth-body">
           <label class="field-label">Username</label>
-          <input type="text" id="oauthUser" placeholder="Enter username">
+          <input type="text" id="oauthUser" placeholder="Enter username" autocomplete="off">
           <label class="field-label">Password</label>
           <input type="password" id="oauthPass" placeholder="••••••••">
           <p class="consent-text">SwitchEasy will receive read-only access to your transaction history. It can never move money without your approval.</p>
           <button type="button" class="btn-primary oauth-btn" id="connectBtn" disabled>Connect securely →</button>
+          <div class="oauth-secure">${LOCK_SVG} 256-bit encrypted session · Powered by TD Open Banking</div>
           <div class="oauth-status mono" id="oauthStatus"></div>
         </div>
       </div>
@@ -605,7 +657,8 @@ function renderScan() {
     <div class="screen-pad scan-screen">
       <h1 id="scanHeading">Reading your transaction history…</h1>
       <p class="subcopy" id="scanSub">Looking across the last 90 days at ${state.bankName} for anything that repeats.</p>
-      <div class="scan-counter mono" id="scanCounter">0</div>
+      <div class="scan-counter" id="scanCounter">0</div>
+      <div class="scan-label" id="scanLabel">transactions scanned at ${state.bankName}</div>
       <div class="progress-track"><div class="progress-fill" id="scanFill"></div></div>
       <div class="scan-results" id="scanResults" hidden></div>
       <button type="button" class="btn-primary" id="reviewBtn" hidden>Review & migrate →</button>
@@ -615,6 +668,7 @@ function renderScan() {
   const fillEl = els.screenRoot.querySelector('#scanFill');
   const headingEl = els.screenRoot.querySelector('#scanHeading');
   const subEl = els.screenRoot.querySelector('#scanSub');
+  const labelEl = els.screenRoot.querySelector('#scanLabel');
   const resultsEl = els.screenRoot.querySelector('#scanResults');
   const reviewBtn = els.screenRoot.querySelector('#reviewBtn');
 
@@ -635,6 +689,7 @@ function renderScan() {
   function showResults() {
     headingEl.textContent = `${p.transactions.length} recurring payments found`;
     subEl.textContent = `Everything that repeats at ${state.bankName}, ready to move to TD.`;
+    labelEl.textContent = `of ${total} transactions scanned`;
     resultsEl.hidden = false;
     p.transactions.forEach((t, i) => {
       schedule(() => {
@@ -664,7 +719,7 @@ function renderReview() {
       <p class="subcopy">Uncheck anything you'd rather handle yourself.</p>
       <div class="review-list" id="reviewList">
         ${state.selectedTx.map((t, i) => `
-          <label class="review-row">
+          <label class="review-row ${t.selected ? '' : 'excluded'}">
             <input type="checkbox" class="review-check" data-i="${i}" ${t.selected ? 'checked' : ''}>
             <span class="tx-icon">${t.icon}</span>
             <span class="tx-info"><span class="tx-name">${t.name}</span><span class="tx-sub">${t.sub}</span></span>
@@ -672,23 +727,41 @@ function renderReview() {
           </label>`).join('')}
       </div>
       <div class="review-footer">
-        <span class="mono" id="reviewCount"></span>
+        <div class="review-count-line">
+          <span class="mono" id="reviewCount"></span>
+          <span class="review-monthly mono" id="reviewMonthly"></span>
+        </div>
         <button type="button" class="btn-primary" id="confirmBtn">Confirm & migrate →</button>
       </div>
     </div>`;
 
   const countEl = els.screenRoot.querySelector('#reviewCount');
+  const monthlyEl = els.screenRoot.querySelector('#reviewMonthly');
   const confirmBtn = els.screenRoot.querySelector('#confirmBtn');
+
+  function monthlyTotal() {
+    let sum = 0;
+    state.selectedTx.filter(t => t.selected).forEach(t => {
+      const m = t.sub.match(/\$([\d,]+(?:\.\d+)?)\/mo/);
+      if (m) sum += parseFloat(m[1].replace(/,/g, ''));
+    });
+    return sum;
+  }
 
   function updateCount() {
     const checked = state.selectedTx.filter(t => t.selected).length;
     countEl.textContent = `${checked} of ${state.selectedTx.length} selected`;
+    const sum = monthlyTotal();
+    monthlyEl.textContent = sum > 0
+      ? `≈ $${sum.toLocaleString('en-CA', { maximumFractionDigits: 0 })}/mo moving to TD`
+      : '';
     confirmBtn.disabled = checked === 0;
   }
 
   els.screenRoot.querySelectorAll('.review-check').forEach(cb => {
     cb.addEventListener('change', () => {
       state.selectedTx[+cb.dataset.i].selected = cb.checked;
+      cb.closest('.review-row').classList.toggle('excluded', !cb.checked);
       updateCount();
     });
   });
@@ -706,17 +779,17 @@ function renderAgent() {
       <div class="agent-terminal">
         <div class="terminal-header">
           <span>⚡ agent_core.log</span>
-          <span class="pill-badge dark"><span class="dot"></span> reasoning live</span>
+          <span class="pill-badge dark" id="livePill"><span class="dot"></span> reasoning live</span>
         </div>
         <div class="terminal-log" id="termLog"><span class="term-cursor">█</span></div>
       </div>
       <div class="agent-checklist">
         <div class="checklist-label">MIGRATION CHECKLIST</div>
-        <div class="checklist-counter mono" id="checkCounter">0/${items.length}</div>
+        <div class="checklist-counter" id="checkCounter">0/${items.length}</div>
         <div class="progress-track dark"><div class="progress-fill" id="checkFill"></div></div>
         <div class="checklist-items">
           ${items.map((t, i) => `
-            <div class="checklist-row">
+            <div class="checklist-row" id="checkrow-${i}">
               <span class="glyph" id="glyph-${i}">○</span>
               <span class="check-name">${t.name}</span>
             </div>`).join('')}
@@ -730,6 +803,7 @@ function renderAgent() {
 
   const termLog = els.screenRoot.querySelector('#termLog');
   const cursorEl = els.screenRoot.querySelector('.term-cursor');
+  const livePill = els.screenRoot.querySelector('#livePill');
   const checkFill = els.screenRoot.querySelector('#checkFill');
   const checkCounter = els.screenRoot.querySelector('#checkCounter');
   const footer = els.screenRoot.querySelector('#agentFooter');
@@ -737,17 +811,31 @@ function renderAgent() {
   const continueBtn = els.screenRoot.querySelector('#continueBtn');
 
   let doneCount = 0;
+  const runStart = Date.now();
+
+  function ts() {
+    const e = (Date.now() - runStart) / 1000;
+    const m = String(Math.floor(e / 60)).padStart(2, '0');
+    const s = (e % 60).toFixed(1).padStart(4, '0');
+    return `${m}:${s}`;
+  }
 
   function appendLine(text, type) {
     const line = document.createElement('div');
     line.className = 'term-line term-' + type;
-    line.textContent = text;
+    const tsSpan = document.createElement('span');
+    tsSpan.className = 'term-ts';
+    tsSpan.textContent = ts();
+    line.appendChild(tsSpan);
+    line.appendChild(document.createTextNode(text));
     termLog.insertBefore(line, cursorEl);
     termLog.scrollTop = termLog.scrollHeight;
   }
   function setGlyph(i, ch, cls) {
     const g = els.screenRoot.querySelector('#glyph-' + i);
     if (g) { g.textContent = ch; g.className = 'glyph ' + cls; }
+    const row = els.screenRoot.querySelector('#checkrow-' + i);
+    if (row) row.classList.toggle('active', cls === 'glyph-mid');
   }
   function updateDone() {
     doneCount++;
@@ -796,10 +884,10 @@ function renderAgent() {
       <div class="browser-mock">
         <div class="browser-chrome">
           <span class="traffic"></span><span class="traffic"></span><span class="traffic"></span>
-          <div class="browser-address">northline.ca/account/payment-method</div>
+          <div class="browser-address">${LOCK_SVG} northline.ca/account/payment-method</div>
         </div>
         <div class="browser-page">
-          <div class="portal-header">NorthLine Communications</div>
+          <div class="portal-header"><span>NorthLine Communications</span><span class="portal-user">Signed in · ${state.persona.clientName}</span></div>
           <div class="portal-body">
             <div class="portal-sidebar">
               <div class="portal-nav-item">Overview</div>
@@ -815,9 +903,10 @@ function renderAgent() {
                 <button type="button" class="portal-edit-btn" id="portalEdit">Edit</button>
               </div>
               <button type="button" class="portal-save-btn" id="portalSave" hidden>Save</button>
+              <div class="portal-meta">Account holder: ${state.persona.clientName} · Last updated 14 Mar 2024</div>
             </div>
           </div>
-          <div class="cursor-arrow" id="cursorArrow">➤</div>
+          <div class="cursor-arrow" id="cursorArrow">${CURSOR_SVG}</div>
           <div class="toast" id="portalToast">Payment method updated.</div>
         </div>
       </div>`;
@@ -889,6 +978,8 @@ function renderAgent() {
     const flaggedCount = items.filter(t => t.needsApproval).length;
     state.finalAuto = autoCount;
     state.finalFlagged = flaggedCount;
+    appendLine(`✓ run complete — ${autoCount} migrated, ${flaggedCount} flagged`, 'ok');
+    livePill.innerHTML = '✓ run complete';
     footer.hidden = false;
     footerText.textContent = `Run complete — ${autoCount} migrated, ${flaggedCount} awaiting your approval.`;
     footer.classList.add('fade-in');
@@ -899,6 +990,8 @@ function renderAgent() {
   });
 
   if (items.length === 0) { finish(); return; }
+  appendLine(`▸ SwitchEasy agent — run started for ${state.persona.clientName}`, 'dim');
+  appendLine(`▸ ${items.length} payments queued · target: TD Canada Trust`, 'dim');
   schedule(() => processTx(0), T.termLineDelay);
 }
 
@@ -906,6 +999,7 @@ function renderAgent() {
 // INPUT PAUSE: type name + tap "Approve & finish →"
 function renderApproval() {
   const flaggedItems = state.selectedTx.filter(t => t.selected && t.needsApproval);
+  const first = flaggedItems[0];
   els.screenRoot.innerHTML = `
     <div class="screen-pad">
       <h1>One needs your sign-off</h1>
@@ -915,8 +1009,16 @@ function renderApproval() {
           <span class="tx-info"><span class="tx-name">${t.name}</span><span class="tx-sub">${t.sub}</span></span>
         </div>`).join('')}
       <p class="subcopy" style="margin-top:16px;">Employers require a signed form to change payroll deposits. The agent has pre-filled it — it just needs your signature.</p>
+      <div class="doc-preview">
+        <div class="doc-preview-title">Direct Deposit Authorization · pre-filled</div>
+        <div class="doc-row"><span class="doc-row-label">Employer</span><span class="doc-row-value">${first.name}</span></div>
+        <div class="doc-row"><span class="doc-row-label">New institution</span><span class="doc-row-value">TD Canada Trust</span></div>
+        <div class="doc-row"><span class="doc-row-label">Account</span><span class="doc-row-value mono">•••• •••• 4471</span></div>
+        <div class="doc-sig" id="docSig"></div>
+        <div class="doc-sig-label">Signature</div>
+      </div>
       <label class="field-label">Type your full name to sign</label>
-      <input type="text" id="signInput" placeholder="Full name">
+      <input type="text" id="signInput" placeholder="Full name" autocomplete="off">
       <div style="margin-top:22px;">
         <button type="button" class="btn-primary" id="approveBtn" disabled>Approve & finish →</button>
       </div>
@@ -924,7 +1026,11 @@ function renderApproval() {
 
   const signInput = els.screenRoot.querySelector('#signInput');
   const approveBtn = els.screenRoot.querySelector('#approveBtn');
-  signInput.addEventListener('input', () => { approveBtn.disabled = !signInput.value.trim(); });
+  const docSig = els.screenRoot.querySelector('#docSig');
+  signInput.addEventListener('input', () => {
+    approveBtn.disabled = !signInput.value.trim();
+    docSig.textContent = signInput.value.trim();
+  });
   approveBtn.addEventListener('click', () => {
     state.signatureName = signInput.value.trim();
     goTo(8);
@@ -944,7 +1050,12 @@ function renderDone() {
       <div class="done-badge">✓</div>
       <h1>${auto} of ${N} payments moved automatically.</h1>
       ${flagged > 0 ? `<p class="subcopy">${flagged} approved by you — everything is live at TD.</p>` : `<p class="subcopy">Everything is live at TD.</p>`}
-      <div class="done-summary-grid">
+      <div class="stat-chips">
+        <span class="stat-chip">${auto} auto-migrated</span>
+        ${flagged > 0 ? `<span class="stat-chip">${flagged} signed by you</span>` : ''}
+        <span class="stat-chip">0 phone calls · 0 hold music</span>
+      </div>
+      <div class="done-summary-grid ${flagged > 0 ? '' : 'single'}">
         <div class="done-summary-col">
           <div class="done-summary-title">Moved ✓</div>
           ${state.selectedTx.filter(t => t.selected && !t.needsApproval).map(t => `<div class="done-row">${t.icon} ${t.name}</div>`).join('')}
@@ -957,8 +1068,11 @@ function renderDone() {
       </div>
       ${flagged > 0 ? `
       <div class="pdf-card">
-        <div class="pdf-card-title">Direct deposit form</div>
-        <div class="pdf-card-sub">Pre-filled with your new TD account and signed by ${state.signatureName}</div>
+        <div class="pdf-icon">📄</div>
+        <div class="pdf-card-text">
+          <div class="pdf-card-title">Direct deposit form</div>
+          <div class="pdf-card-sub">Pre-filled with your new TD account and signed by ${state.signatureName}</div>
+        </div>
         <button type="button" class="btn-primary" id="pdfBtn">Download PDF</button>
       </div>` : ''}
     </div>`;
