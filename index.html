@@ -37,13 +37,15 @@
   button{font-family:inherit;min-height:44px;}
   img{max-width:100%;display:block;}
 
-  /* ---------- icon tiles (PNG drops in, emoji is the fallback) ---------- */
-  .tile{width:40px;height:40px;border-radius:10px;background:#fff;border:1px solid var(--line);
+  /* ---------- icon tiles (PNG drops in, emoji is the fallback) ----------
+     Width adapts so wide brand wordmarks stay legible; square marks stay square. */
+  .tile{min-width:40px;max-width:80px;height:40px;padding:0 7px;border-radius:10px;background:#fff;border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;overflow:hidden;}
-  .tile img{width:72%;height:72%;object-fit:contain;}
+  .tile img{max-width:100%;max-height:66%;width:auto;height:auto;object-fit:contain;}
   .tile .tile-emoji{line-height:1;}
-  .tile.sm{width:24px;height:24px;border-radius:7px;font-size:13px;}
-  .tile.lg{width:48px;height:48px;border-radius:12px;font-size:23px;}
+  .tile.sm{min-width:24px;max-width:52px;height:24px;padding:0 4px;border-radius:7px;font-size:13px;}
+  .tile.lg{min-width:68px;max-width:68px;height:68px;padding:0;border-radius:16px;font-size:30px;}
+  .tile.lg img{max-width:100%;max-height:100%;}
 
   /* ---------- chrome bar ---------- */
   .chrome-bar{
@@ -196,9 +198,9 @@
   .oauth-card{width:100%;max-width:420px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-float);background:#fff;}
   .oauth-header{background:var(--brand);color:#fff;padding:20px 24px;display:flex;align-items:center;gap:12px;}
   .oauth-header.light{background:#fff;color:var(--ink);border-bottom:1px solid var(--line);}
-  .oauth-logo img{height:28px;width:28px;object-fit:contain;border-radius:6px;background:#fff;}
-  .cred-avatar{width:30px;height:30px;border-radius:8px;background:#fff;color:var(--brand);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
-  .cred-avatar img{width:78%;height:78%;object-fit:contain;}
+  .oauth-logo img{height:26px;width:auto;max-width:130px;object-fit:contain;border-radius:6px;background:#fff;padding:3px 6px;}
+  .cred-avatar{min-width:30px;max-width:96px;height:30px;padding:0 6px;border-radius:8px;background:#fff;color:var(--brand);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+  .cred-avatar img{max-width:100%;max-height:64%;width:auto;height:auto;object-fit:contain;}
   .oauth-header.light .cred-avatar{background:var(--paper);border:1px solid var(--line);}
   .oauth-bankname{font-weight:700;font-size:16px;letter-spacing:-0.01em;flex:1;}
   .oauth-tag{font-size:10.5px;opacity:.75;font-weight:500;}
@@ -276,7 +278,7 @@
   .checklist-items{margin-top:18px;display:flex;flex-direction:column;}
   .checklist-row{display:flex;align-items:center;gap:12px;padding:8px;margin:0 -8px;border-bottom:1px solid var(--terminal-line);font-size:13px;border-radius:6px;transition:background .3s;}
   .checklist-row.active{background:rgba(207,239,218,.06);}
-  .checklist-row .tile.sm{background:rgba(255,255,255,.06);border-color:transparent;}
+  .checklist-row .tile.sm{background:#fff;border-color:transparent;}
   .glyph{width:18px;text-align:center;color:var(--terminal-dim);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
   .glyph-mid{color:#E8C97A;}
   .glyph-ok{color:#8FE8A8;}
@@ -297,7 +299,8 @@
   .browser-page{background:#F7F8F9;min-height:290px;position:relative;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;}
   .portal-topbar{background:#fff;border-bottom:1px solid #E4E7EA;padding:10px 20px;display:flex;align-items:center;gap:22px;}
   .portal-brand{font-weight:800;font-size:17px;color:#DA291C;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;}
-  .portal-brand img{height:20px;width:auto;object-fit:contain;}
+  .portal-brand img{height:18px;width:auto;object-fit:contain;}
+  .portal-brand img + .pb-text{display:none;} /* wordmark image replaces the text; text returns if the image is missing */
   .portal-nav{display:flex;gap:16px;font-size:11.5px;color:#55606A;flex:1;}
   .portal-nav span.active{color:#1a1a1a;font-weight:700;border-bottom:2px solid #DA291C;padding-bottom:2px;}
   .portal-user{font-size:10.5px;color:#55606A;}
@@ -312,8 +315,8 @@
   .portal-card{background:#fff;border:1px solid #E4E7EA;border-radius:10px;padding:4px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
   .portal-field-row{display:flex;align-items:center;gap:12px;padding:11px 0;flex-wrap:wrap;}
   .portal-field-row + .portal-field-row{border-top:1px solid #EEF0F2;}
-  .portal-field-label{font-size:11px;color:#8A939B;width:110px;flex-shrink:0;}
-  .portal-field-value{flex:1;font-size:12.5px;color:#1a1a1a;min-width:120px;outline:none;font-weight:600;}
+  .portal-field-label{font-size:11px;color:#8A939B;width:90px;flex-shrink:0;}
+  .portal-field-value{flex:1;font-size:12px;color:#1a1a1a;min-width:120px;outline:none;font-weight:600;white-space:nowrap;}
   .portal-meta{font-size:10.5px;color:#8A939B;margin-top:10px;}
   .portal-edit-btn, .portal-save-btn{background:#DA291C;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;min-height:auto;font-weight:600;}
   .portal-save-btn{margin-top:12px;}
@@ -1182,7 +1185,7 @@ function renderAgent() {
         </div>
         <div class="browser-page">
           <div class="portal-topbar">
-            <span class="portal-brand"><img src="assets/billers/rogers.png" alt="" data-emoji="">Rogers</span>
+            <span class="portal-brand"><img src="assets/billers/rogers.png" alt="" data-emoji=""><span class="pb-text">Rogers</span></span>
             <nav class="portal-nav"><span>Internet</span><span>TV</span><span>Mobile</span><span class="active">MyRogers</span></nav>
             <span class="portal-user">Signed in · via SwitchEasy agent</span>
           </div>

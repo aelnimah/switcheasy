@@ -41,12 +41,14 @@ All editable content lives in `config.js`:
 - `timings` — every animation/timing value in the app (scan speed, terminal pacing, cursor speed, etc.), in milliseconds.
 - `agentLogLines(tx)` — the terminal "voice" per transaction. Edit the copy here without touching the animation engine in `index.html`.
 
-### Dropping in real logos (PNGs)
+### Logos & graphics (PNGs)
 
-Every image is optional — add a PNG at the right path and it appears
-automatically; if the file is missing the app falls back to the emoji (for
-billers/personas) or a lettered tile (for banks). It never shows a broken
-image icon.
+Real brand logos are bundled (sourced from Wikipedia/Wikimedia at 256–330 px,
+plus a few high-res favicons), along with an original SwitchEasy app mark and
+custom flat illustrations for the three landing cards. To swap any of them,
+just replace the PNG at its path — if a file is missing the app falls back to
+the emoji (for billers/personas) or a lettered tile (for banks). It never
+shows a broken image icon.
 
 | Path | Used for |
 |---|---|
