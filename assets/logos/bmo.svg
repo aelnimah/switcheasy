@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <rect width="120" height="120" rx="22" fill="#0079C1"/>
+  <rect x="30" y="30" width="60" height="60" rx="10" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.5"/>
+  <text x="60" y="72" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="32" fill="#FFFFFF" text-anchor="middle">BMO</text>
+</svg>

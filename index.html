@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SwitchEasy — TD Innovation Challenge</title>
+<meta name="description" content="SwitchEasy — an agentic AI demo that migrates recurring payments to TD.">
+<meta name="theme-color" content="#008A00">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23008A00'/%3E%3Ctext x='50' y='68' font-family='Arial' font-weight='700' font-size='58' fill='white' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --td-green:#008A00; --td-green-dark:#036303; --td-green-pale:#E6F4E6;
+    --ink:#1C1C1C; --ink-soft:#616161; --paper:#F4F7F4; --surface:#FFFFFF; --line:#DCE3DC;
+    --amber:#A66B00; --amber-pale:#FBF0DC;
+    --terminal-bg:#0C1710; --terminal-line:#1B2E22; --terminal-text:#CFEFDA; --terminal-dim:#5E8770;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex; flex-direction:column;
+  }
+  h1{font-weight:700;font-size:34px;line-height:1.15;margin:0 0 16px;color:var(--ink);}
+  p{margin:0;}
+  button{font-family:inherit;min-height:44px;}
+  img{max-width:100%;display:block;}
+
+  /* ---------- chrome bar ---------- */
+  .chrome-bar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;height:60px;background:var(--surface);
+    border-bottom:1px solid var(--line);flex-shrink:0;
+  }
+  .chrome-left{display:flex;align-items:center;gap:12px;}
+  .logo-tap{display:flex;align-items:center;justify-content:center;width:44px;height:44px;cursor:pointer;border-radius:8px;}
+  .logo-tap img{width:26px;height:26px;}
+  .wordmark{font-weight:700;font-size:18px;letter-spacing:-0.01em;}
+  .proto-pill{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);
+    background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+  }
+  .restart-btn{
+    background:transparent;border:1px solid var(--line);border-radius:8px;
+    padding:9px 18px;font-weight:600;font-size:13px;color:var(--ink);cursor:pointer;
+    transition:background .15s;
+  }
+  .restart-btn:hover{background:var(--paper);}
+  .restart-btn:active{transform:scale(.97);}
+
+  /* ---------- step rail ---------- */
+  .rail{display:flex;padding:16px 40px 14px;background:var(--paper);border-bottom:1px solid var(--line);flex-shrink:0;}
+  .rail-segment{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;}
+  .rail-segment:not(:last-child)::after{
+    content:'';position:absolute;top:5px;left:50%;width:100%;height:2px;background:var(--line);z-index:0;
+  }
+  .rail-segment.completed:not(:last-child)::after{background:var(--td-green);}
+  .rail-dot{width:10px;height:10px;border-radius:50%;background:var(--line);position:relative;z-index:1;transition:background .3s, box-shadow .3s;}
+  .rail-label{font-size:12px;font-weight:600;color:var(--ink-soft);transition:color .3s;}
+  .rail-segment.completed .rail-dot{background:var(--td-green);}
+  .rail-segment.completed .rail-label{color:var(--td-green-dark);}
+  .rail-segment.current .rail-dot{background:var(--td-green);box-shadow:0 0 0 4px var(--td-green-pale);}
+  .rail-segment.current .rail-label{color:var(--ink);font-weight:700;}
+
+  /* ---------- stage / device ---------- */
+  #stage{flex:1;display:flex;padding:32px 24px 48px;}
+  #device{
+    max-width:1080px;width:100%;margin:0 auto;background:var(--surface);
+    border:1px solid var(--line);border-radius:20px;
+    box-shadow:0 20px 60px -24px rgba(28,28,28,.18);
+    overflow:hidden;position:relative;display:flex;flex-direction:column;min-height:640px;
+    transition:background .4s ease, border-color .4s ease;
+  }
+  #device.terminal-mode{background:var(--terminal-bg);border-color:var(--terminal-line);}
+  #screen-root{flex:1;display:flex;flex-direction:column;}
+  .screen-pad{flex:1;display:flex;flex-direction:column;padding:52px 60px;}
+
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--td-green-dark);font-weight:600;margin-bottom:14px;text-transform:uppercase;}
+  .subcopy{color:var(--ink-soft);font-size:15px;line-height:1.6;max-width:520px;}
+
+  .pill-badge{display:inline-flex;align-items:center;gap:8px;background:var(--td-green-pale);color:var(--td-green-dark);border-radius:999px;padding:6px 14px;font-weight:600;font-size:13px;margin-bottom:20px;width:fit-content;}
+  .pill-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--td-green);animation:pulse 1.6s infinite;}
+  .pill-badge.dark{background:rgba(207,239,218,.08);color:var(--terminal-text);}
+  .pill-badge.dark .dot{background:#5CF07A;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(1.35);}}
+
+  .btn-primary{
+    background:var(--td-green);color:#fff;border:none;border-radius:8px;
+    padding:14px 26px;font-weight:600;font-size:15px;cursor:pointer;
+    transition:background .15s, transform .1s; width:fit-content;
+  }
+  .btn-primary:hover:not(:disabled){background:var(--td-green-dark);}
+  .btn-primary:active:not(:disabled){transform:scale(.98);}
+  .btn-primary:disabled{background:var(--line);color:var(--ink-soft);cursor:not-allowed;}
+
+  input[type="text"], input[type="password"]{
+    width:100%;max-width:420px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;
+    font-size:15px;font-family:inherit;min-height:44px;background:#fff;color:var(--ink);
+  }
+  input:focus{outline:2px solid var(--td-green);outline-offset:1px;border-color:var(--td-green);}
+  .field-label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin:14px 0 6px;}
+
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .fade-in{animation:fadeIn .4s ease both;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+  /* ---------- Screen 0: scenario ---------- */
+  .scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px;}
+  .scenario-card{
+    text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;
+    padding:26px 22px;cursor:pointer;transition:all .2s;
+  }
+  .scenario-card:hover{border-color:#c3d3c3;transform:translateY(-2px);}
+  .scenario-card.selected{border-color:var(--td-green);background:var(--td-green-pale);}
+  .scenario-card-label{font-weight:700;font-size:18px;margin-bottom:8px;}
+  .scenario-card-tagline{color:var(--ink-soft);font-size:13.5px;margin-bottom:18px;line-height:1.5;}
+  .mono-badge{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:5px 10px;display:inline-block;color:var(--ink-soft);}
+
+  /* ---------- Screen 1: welcome ---------- */
+  .welcome-screen{flex:1;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;}
+  .welcome-left h1{margin-top:6px;}
+  .stat-row{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink);margin:24px 0 28px;}
+  .stat-row .sep{color:var(--line);}
+  .ledger-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .ledger-title{font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:12px;}
+  .ledger-row{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px;}
+  .ledger-row:last-of-type{border-bottom:none;}
+  .ledger-name{flex:1;font-weight:600;}
+  .ledger-sub{color:var(--ink-soft);font-size:11.5px;}
+  .ledger-more{opacity:.5;padding-top:10px;font-size:12px;}
+
+  /* ---------- Screen 2: institution ---------- */
+  .bank-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;margin:28px 0;}
+  .bank-card{
+    background:#fff;border:2px solid var(--line);border-radius:14px;padding:24px 16px;
+    display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s;min-height:130px;
+  }
+  .bank-card:hover{border-color:#c3d3c3;}
+  .bank-card.selected{border-color:var(--card-brand);box-shadow:0 10px 26px -12px var(--card-brand);}
+  .bank-logo-wrap{width:100%;height:40px;display:flex;align-items:center;justify-content:center;}
+  .bank-logo{height:36px;width:auto;object-fit:contain;}
+  .bank-fallback{width:36px;height:36px;border-radius:8px;background:var(--ink-soft);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;}
+  .bank-fallback.small{width:28px;height:28px;font-size:13px;}
+  .bank-name{font-weight:600;font-size:14px;}
+  .other-input-wrap{margin-bottom:20px;}
+
+  /* ---------- Screen 3: connect / OAuth ---------- */
+  .connect-screen{flex:1;display:flex;justify-content:center;align-items:center;}
+  .oauth-card{width:100%;max-width:420px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 16px 40px -18px rgba(0,0,0,.2);}
+  .oauth-header{background:var(--brand);color:#fff;padding:20px 24px;display:flex;align-items:center;gap:12px;}
+  .oauth-logo img{height:28px;width:28px;object-fit:contain;border-radius:6px;}
+  .oauth-bankname{font-weight:700;font-size:16px;}
+  .oauth-body{padding:24px;background:#fff;}
+  .oauth-btn{width:100%;background:var(--brand);}
+  .oauth-btn:hover:not(:disabled){filter:brightness(0.88);}
+  .consent-text{font-size:12px;color:var(--ink-soft);line-height:1.5;margin-top:16px;}
+  .oauth-status{margin-top:14px;min-height:18px;font-size:12px;color:var(--ink-soft);opacity:0;transition:opacity .3s;}
+  .oauth-status.visible{opacity:1;}
+  .oauth-status.ok{color:var(--td-green-dark);}
+
+  /* ---------- Screen 4: scan ---------- */
+  .scan-screen{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .scan-counter{font-family:'JetBrains Mono',monospace;font-size:60px;font-weight:700;margin:20px 0;color:var(--td-green-dark);}
+  .progress-track{width:100%;max-width:480px;height:8px;background:var(--paper);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:14px;}
+  .progress-track.dark{background:var(--terminal-line);border-color:var(--terminal-line);}
+  .progress-fill{height:100%;width:0;background:var(--td-green);transition:width .1s linear;}
+  .scan-results{width:100%;max-width:640px;margin-top:20px;text-align:left;}
+  .scan-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fff;animation:rowIn .35s ease both;}
+  @keyframes rowIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .tx-icon{font-size:21px;width:34px;text-align:center;flex-shrink:0;}
+  .tx-info{flex:1;display:flex;flex-direction:column;text-align:left;}
+  .tx-name{font-weight:600;font-size:14px;}
+  .tx-sub{font-size:12px;color:var(--ink-soft);}
+  .tx-badge{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--paper);border:1px solid var(--line);padding:4px 8px;border-radius:6px;color:var(--ink-soft);white-space:nowrap;}
+
+  /* ---------- Screen 5: review ---------- */
+  .review-list{margin:24px 0;width:100%;}
+  .review-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;cursor:pointer;min-height:44px;}
+  .review-check{width:22px;height:22px;accent-color:var(--td-green);cursor:pointer;flex-shrink:0;}
+  .review-footer{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:18px 0 0;display:flex;justify-content:space-between;align-items:center;margin-top:auto;}
+
+  /* ---------- Screen 6: agent at work ---------- */
+  .agent-screen{display:flex;flex:1;}
+  .agent-terminal{flex:0 0 55%;background:var(--terminal-bg);color:var(--terminal-text);padding:28px 28px 0;display:flex;flex-direction:column;border-right:1px solid var(--terminal-line);min-width:0;}
+  .terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--terminal-dim);}
+  .terminal-log{flex:1;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.85;padding-bottom:28px;max-height:400px;}
+  .term-line{white-space:pre-wrap;}
+  .term-dim{color:var(--terminal-dim);}
+  .term-ok{color:#8FE8A8;}
+  .term-warn{color:#E8C97A;}
+  .term-cursor{display:inline-block;animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .agent-checklist{flex:0 0 45%;background:var(--terminal-bg);padding:28px;color:var(--terminal-text);min-width:0;}
+  .checklist-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--terminal-dim);margin-bottom:8px;}
+  .checklist-counter{font-size:26px;font-weight:700;margin-bottom:12px;}
+  .checklist-items{margin-top:18px;display:flex;flex-direction:column;}
+  .checklist-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--terminal-line);font-size:13px;}
+  .glyph{width:18px;text-align:center;color:var(--terminal-dim);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+  .glyph-mid{color:#E8C97A;}
+  .glyph-ok{color:#8FE8A8;}
+  .glyph-warn{color:#E8C97A;}
+  .agent-footer{padding:20px 28px;background:var(--terminal-bg);border-top:1px solid var(--terminal-line);display:flex;justify-content:space-between;align-items:center;color:var(--terminal-text);gap:16px;}
+
+  /* killer shot */
+  .killer-panel{max-height:0;overflow:hidden;transition:max-height .5s ease;}
+  .killer-panel.expanded{max-height:340px;}
+  .browser-mock{background:#e9edf0;border-radius:10px;overflow:hidden;position:relative;border:1px solid #cbd3d8;margin:10px 0;}
+  .browser-chrome{background:#dfe4e8;padding:8px 12px;display:flex;align-items:center;gap:6px;}
+  .traffic{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .traffic:nth-child(1){background:#ff5f57;}
+  .traffic:nth-child(2){background:#febc2e;}
+  .traffic:nth-child(3){background:#28c840;}
+  .browser-address{margin-left:10px;background:#fff;border-radius:6px;padding:4px 10px;font-size:11px;color:#555;font-family:'JetBrains Mono',monospace;flex:1;}
+  .browser-page{background:#fff;min-height:250px;position:relative;}
+  .portal-header{background:#1F4E79;color:#fff;padding:14px 20px;font-weight:700;font-size:15px;}
+  .portal-body{display:flex;}
+  .portal-sidebar{width:130px;background:#F2F5F7;padding:14px 0;border-right:1px solid #E0E6EA;flex-shrink:0;}
+  .portal-nav-item{padding:9px 16px;font-size:11.5px;color:#4A5A66;}
+  .portal-nav-item.active{background:#fff;color:#1F4E79;font-weight:700;border-left:3px solid #1F4E79;}
+  .portal-main{flex:1;padding:18px;min-width:0;}
+  .portal-panel-title{font-weight:700;font-size:13.5px;color:#1F2A33;margin-bottom:14px;}
+  .portal-field-row{display:flex;align-items:center;gap:12px;background:#F7F9FA;border:1px solid #E0E6EA;border-radius:8px;padding:12px 14px;flex-wrap:wrap;}
+  .portal-field-label{font-size:11px;color:#6B7A85;width:90px;flex-shrink:0;}
+  .portal-field-value{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#1F2A33;min-width:120px;outline:none;}
+  .portal-edit-btn, .portal-save-btn{background:#1F4E79;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;min-height:auto;}
+  .portal-save-btn{margin-top:12px;}
+  .cursor-arrow{
+    position:absolute;font-size:18px;color:#1a1a1a;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.35));
+    transition:left .9s cubic-bezier(.22,.61,.36,1), top .9s cubic-bezier(.22,.61,.36,1);
+    left:8%;top:55%;pointer-events:none;transform:rotate(-25deg);z-index:5;
+  }
+  .click-ripple{position:absolute;width:10px;height:10px;border:2px solid #1F4E79;border-radius:50%;transform:translate(-50%,-50%);animation:ripple .5s ease-out;pointer-events:none;}
+  @keyframes ripple{from{width:10px;height:10px;opacity:1;}to{width:44px;height:44px;opacity:0;}}
+  .toast{position:absolute;bottom:14px;left:50%;transform:translate(-50%,20px);background:var(--td-green);color:#fff;padding:9px 18px;border-radius:8px;font-size:12.5px;font-weight:600;opacity:0;transition:all .35s ease;}
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  /* ---------- Screen 7: approval ---------- */
+  .approval-card{display:flex;gap:14px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--amber-pale);margin:20px 0 4px;}
+
+  /* ---------- Screen 8: done ---------- */
+  .done-screen{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .done-badge{width:72px;height:72px;border-radius:50%;background:var(--td-green);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;animation:scaleIn .4s ease both;}
+  @keyframes scaleIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .done-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:640px;margin:26px 0;text-align:left;}
+  .done-summary-col{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px;}
+  .done-summary-title{font-weight:700;font-size:13px;color:var(--td-green-dark);margin-bottom:10px;}
+  .done-row{font-size:13px;padding:6px 0;}
+  .pdf-card{border:1px solid var(--line);border-radius:12px;padding:20px 24px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:480px;width:100%;}
+  .pdf-card-title{font-weight:700;font-size:15px;}
+  .pdf-card-sub{font-size:13px;color:var(--ink-soft);}
+
+  /* ---------- HUD ---------- */
+  #hud{position:fixed;bottom:16px;left:16px;background:rgba(12,23,16,.92);color:#CFEFDA;font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 14px;border-radius:8px;z-index:999;}
+  #hud a{color:#8FE8A8;margin-left:12px;text-decoration:underline;cursor:pointer;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px){
+    .scenario-grid{grid-template-columns:1fr;}
+    .welcome-screen{grid-template-columns:1fr;}
+    .agent-screen{flex-direction:column;}
+    .agent-terminal, .agent-checklist{flex:none;border-right:none;}
+    .done-summary-grid{grid-template-columns:1fr;}
+    .screen-pad{padding:36px 24px;}
+  }
+
+  /* ---------- reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration:0.001ms !important; animation-iteration-count:1 !important;
+      transition-duration:0.001ms !important; scroll-behavior:auto !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="chrome-bar">
+  <div class="chrome-left">
+    <span class="logo-tap" id="logoTap"><img src="assets/logos/td.svg" alt="TD" width="26" height="26" id="logoImg"></span>
+    <span class="wordmark">SwitchEasy</span>
+    <span class="proto-pill">Prototype · TD Open Banking</span>
+  </div>
+  <button class="restart-btn" id="restartBtn" type="button">Restart</button>
+</header>
+
+<nav class="rail" id="rail"></nav>
+
+<main id="stage">
+  <div id="device">
+    <div id="screen-root"></div>
+  </div>
+</main>
+
+<div id="hud" hidden>
+  <span id="hudScreen"></span>
+  <a id="hudSkip">skip →</a>
+</div>
+
+<script type="module">
+import { banks, personas, timings, agentLogLines } from './config.js';
+
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const T = prefersReduced
+  ? Object.fromEntries(Object.entries(timings).map(([k, v]) => [k, Math.max(1, Math.round(v * 0.15))]))
+  : timings;
+
+const els = {
+  logoTap: document.getElementById('logoTap'),
+  logoImg: document.getElementById('logoImg'),
+  restartBtn: document.getElementById('restartBtn'),
+  rail: document.getElementById('rail'),
+  device: document.getElementById('device'),
+  screenRoot: document.getElementById('screen-root'),
+  hud: document.getElementById('hud'),
+  hudScreen: document.getElementById('hudScreen'),
+  hudSkip: document.getElementById('hudSkip'),
+};
+
+els.logoImg.addEventListener('error', () => {
+  els.logoImg.replaceWith(Object.assign(document.createElement('div'), { className: 'bank-fallback small', textContent: 'TD' }));
+}, { once: true });
+
+els.screenRoot.style.transition = `opacity ${timings.screenFade / 2}ms ease`;
+
+function freshState() {
+  return {
+    screen: 0, personaKey: null, persona: null, bankId: null, bankName: null,
+    selectedTx: [], signatureName: '', finalAuto: 0, finalFlagged: 0, _locked: false,
+  };
+}
+let state = freshState();
+
+let activeTimers = [];
+function schedule(fn, ms) { const id = setTimeout(fn, ms); activeTimers.push(id); return id; }
+function clearAllTimers() { activeTimers.forEach(id => { clearTimeout(id); clearInterval(id); }); activeTimers = []; }
+
+const railSegments = ['Scenario', 'Welcome', 'Connect', 'Scan', 'Migrate', 'Done'];
+const screenToSegment = [0, 1, 2, 2, 3, 4, 4, 4, 5];
+function renderRail() {
+  const current = screenToSegment[state.screen];
+  els.rail.innerHTML = railSegments.map((label, i) => `
+    <div class="rail-segment ${i < current ? 'completed' : ''} ${i === current ? 'current' : ''}">
+      <span class="rail-dot"></span>
+      <span class="rail-label">${label}</span>
+    </div>`).join('');
+}
+
+const screenNames = ['Scenario', 'Welcome', 'Institution', 'Connect', 'Scan', 'Review', 'Agent', 'Approval', 'Done'];
+function updateHud() {
+  if (!els.hud.hidden) els.hudScreen.textContent = `Screen ${state.screen}: ${screenNames[state.screen]}`;
+}
+
+function goTo(newScreen) {
+  clearAllTimers();
+  els.screenRoot.style.opacity = '0';
+  schedule(() => {
+    state.screen = newScreen;
+    els.device.classList.toggle('terminal-mode', newScreen === 6);
+    els.screenRoot.innerHTML = '';
+    renderRail();
+    updateHud();
+    screens[newScreen]();
+    els.screenRoot.style.opacity = '1';
+  }, timings.screenFade / 2);
+}
+
+function restart() {
+  clearAllTimers();
+  state = freshState();
+  goTo(0);
+}
+els.restartBtn.addEventListener('click', restart);
+
+let tapTimes = [];
+els.logoTap.addEventListener('click', () => {
+  const now = Date.now();
+  tapTimes = tapTimes.filter(t => now - t < 600);
+  tapTimes.push(now);
+  if (tapTimes.length >= 3) {
+    tapTimes = [];
+    els.hud.hidden = !els.hud.hidden;
+    updateHud();
+  }
+});
+els.hudSkip.addEventListener('click', advanceFromHud);
+
+function advanceFromHud() {
+  clearAllTimers();
+  switch (state.screen) {
+    case 0:
+      state.personaKey = 'switcher';
+      state.persona = personas.switcher;
+      state.selectedTx = state.persona.transactions.map(t => ({ ...t, selected: true, status: 'pending' }));
+      goTo(1);
+      break;
+    case 2:
+      if (!state.bankId) { state.bankId = 'rbc'; state.bankName = 'RBC'; }
+      goTo(3);
+      break;
+    case 3:
+      goTo(4);
+      break;
+    case 6: {
+      const items = state.selectedTx.filter(t => t.selected);
+      state.finalAuto = items.filter(t => !t.needsApproval).length;
+      state.finalFlagged = items.filter(t => t.needsApproval).length;
+      goTo(state.finalFlagged > 0 ? 7 : 8);
+      break;
+    }
+    default:
+      goTo(Math.min(8, state.screen + 1));
+  }
+}
+
+function attachImgFallback(img) {
+  img.addEventListener('error', () => {
+    const div = document.createElement('div');
+    div.className = 'bank-fallback';
+    div.textContent = img.dataset.fallbackLetter || '?';
+    img.replaceWith(div);
+  }, { once: true });
+}
+
+/* ---------------- Screen 0: choose scenario ---------------- */
+// INPUT PAUSE: tap a card → 300ms selected beat → advance.
+function renderScenario() {
+  els.screenRoot.innerHTML = `
+    <div class="screen-pad">
+      <div class="eyebrow">TD Innovation Challenge · Live Demo</div>
+      <h1>Who's switching today?</h1>
+      <p class="subcopy">Pick a scenario to see SwitchEasy handle it end to end.</p>
+      <div class="scenario-grid">
+        ${Object.entries(personas).map(([key, p]) => `
+          <button type="button" class="scenario-card" data-key="${key}">
+            <div class="scenario-card-label">${p.label}</div>
+            <div class="scenario-card-tagline">${p.tagline}</div>
+            <div class="mono-badge">${p.transactions.length} recurring payments</div>
+          </button>`).join('')}
+      </div>
+    </div>`;
+
+  els.screenRoot.querySelectorAll('.scenario-card').forEach(card => {
+    card.addEventListener('click', () => {
+      if (state._locked) return;
+      state._locked = true;
+      els.screenRoot.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const key = card.dataset.key;
+      state.personaKey = key;
+      state.persona = personas[key];
+      state.selectedTx = state.persona.transactions.map(t => ({ ...t, selected: true, status: 'pending' }));
+      schedule(() => { state._locked = false; goTo(1); }, 300);
+    });
+  });
+}
+
+/* ---------------- Screen 1: welcome ---------------- */
+// INPUT PAUSE: "Start my switch →"
+function renderWelcome() {
+  const p = state.persona;
+  const N = p.transactions.length;
+  const preview = p.transactions.slice(0, 5);
+  const more = N - preview.length;
+  els.screenRoot.innerHTML = `
+    <div class="screen-pad">
+      <div class="welcome-screen">
+        <div class="welcome-left">
+          <div class="pill-badge"><span class="dot"></span> AGENTIC AI · LIVE DEMO</div>
+          <h1>Your switch,<br>handled.</h1>
+          <p class="subcopy">Moving banks means untangling every bill, deposit and payee by hand. SwitchEasy is an agent that does it for you — it scans, plans, and independently migrates every recurring payment to TD, then shows you the receipts.</p>
+          <div class="stat-row mono">
+            <span>${N} payments to move</span><span class="sep">·</span><span>0 forms you fill out</span><span class="sep">·</span><span>~2 min agent runtime</span>
+          </div>
+          <button type="button" class="btn-primary" id="startBtn">Start my switch →</button>
+        </div>
+        <div class="welcome-right">
+          <div class="ledger-card mono">
+            <div class="ledger-title">${p.clientName}'s recurring payments</div>
+            ${preview.map(t => `
+              <div class="ledger-row">
+                <span>${t.icon}</span>
+                <span class="ledger-name">${t.name}</span>
+                <span class="ledger-sub">${t.sub}</span>
+              </div>`).join('')}
+            ${more > 0 ? `<div class="ledger-more">+ ${more} more detected on scan</div>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('startBtn').addEventListener('click', () => goTo(2));
+}
+
+/* ---------------- Screen 2: choose old institution ---------------- */
+// INPUT PAUSE: select (+ optionally type) → "Continue →"
+function renderInstitution() {
+  els.screenRoot.innerHTML = `
+    <div class="screen-pad">
+      <h1>Where are you switching from?</h1>
+      <p class="subcopy">SwitchEasy connects to your current institution to read your transaction history.</p>
+      <div class="bank-grid">
+        ${banks.map(b => `
+          <button type="button" class="bank-card" data-id="${b.id}" style="--card-brand:${b.brand}">
+            <div class="bank-logo-wrap">
+              ${b.logo
+                ? `<img src="${b.logo}" alt="${b.name}" class="bank-logo" data-fallback-letter="${b.name[0]}">`
+                : `<div class="bank-fallback">${b.name[0]}</div>`}
+            </div>
+            <div class="bank-name">${b.name}</div>
+          </button>`).join('')}
+      </div>
+      <div id="otherWrap" class="other-input-wrap" hidden>
+        <input type="text" id="otherName" placeholder="Name of your bank" maxlength="40">
+      </div>
+      <button type="button" class="btn-primary" id="contBtn" disabled>Continue →</button>
+    </div>`;
+
+  els.screenRoot.querySelectorAll('img.bank-logo').forEach(attachImgFallback);
+
+  const contBtn = els.screenRoot.querySelector('#contBtn');
+  const otherWrap = els.screenRoot.querySelector('#otherWrap');
+  const otherInput = els.screenRoot.querySelector('#otherName');
+
+  els.screenRoot.querySelectorAll('.bank-card').forEach(card => {
+    card.addEventListener('click', () => {
+      els.screenRoot.querySelectorAll('.bank-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.bankId = card.dataset.id;
+      const bank = banks.find(b => b.id === state.bankId);
+      state.bankName = bank.name;
+      otherWrap.hidden = state.bankId !== 'other';
+      contBtn.disabled = false;
+    });
+  });
+
+  otherInput.addEventListener('input', () => {
+    state.bankName = otherInput.value.trim() || 'Other';
+  });
+
+  contBtn.addEventListener('click', () => goTo(3));
+}
+
+/* ---------------- Screen 3: connect (fake OAuth) ---------------- */
+// INPUT PAUSE: any non-empty input in both fields enables the button
+function renderConnect() {
+  const bank = banks.find(b => b.id === state.bankId) || banks[banks.length - 1];
+  els.screenRoot.innerHTML = `
+    <div class="screen-pad connect-screen">
+      <div class="oauth-card" style="--brand:${bank.brand}">
+        <div class="oauth-header">
+          <div class="oauth-logo">${bank.logo
+            ? `<img src="${bank.logo}" alt="${state.bankName}" id="oauthLogoImg" data-fallback-letter="${state.bankName[0]}">`
+            : `<div class="bank-fallback small">${state.bankName[0]}</div>`}</div>
+          <div class="oauth-bankname">${state.bankName} Online</div>
+        </div>
+        <div class="oauth-body">
+          <label class="field-label">Username</label>
+          <input type="text" id="oauthUser" placeholder="Enter username">
+          <label class="field-label">Password</label>
+          <input type="password" id="oauthPass" placeholder="••••••••">
+          <p class="consent-text">SwitchEasy will receive read-only access to your transaction history. It can never move money without your approval.</p>
+          <button type="button" class="btn-primary oauth-btn" id="connectBtn" disabled>Connect securely →</button>
+          <div class="oauth-status mono" id="oauthStatus"></div>
+        </div>
+      </div>
+    </div>`;
+
+  const oauthLogoImg = els.screenRoot.querySelector('#oauthLogoImg');
+  if (oauthLogoImg) attachImgFallback(oauthLogoImg);
+
+  const user = els.screenRoot.querySelector('#oauthUser');
+  const pass = els.screenRoot.querySelector('#oauthPass');
+  const btn = els.screenRoot.querySelector('#connectBtn');
+  const status = els.screenRoot.querySelector('#oauthStatus');
+
+  function checkEnable() { btn.disabled = !(user.value.trim() && pass.value.trim()); }
+  user.addEventListener('input', checkEnable);
+  pass.addEventListener('input', checkEnable);
+
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    user.disabled = true; pass.disabled = true;
+    status.textContent = 'Establishing encrypted Open Banking session…';
+    status.classList.add('visible');
+    schedule(() => {
+      status.textContent = '✓ Connected. Read-only access granted.';
+      status.classList.add('ok');
+      schedule(() => goTo(4), 700);
+    }, T.connectDelay);
+  });
+}
+
+/* ---------------- Screen 4: scan (AUTO) ---------------- */
+// INPUT PAUSE: "Review & migrate →" (after cascade completes)
+function renderScan() {
+  const p = state.persona;
+  els.screenRoot.innerHTML = `
+    <div class="screen-pad scan-screen">
+      <h1 id="scanHeading">Reading your transaction history…</h1>
+      <p class="subcopy" id="scanSub">Looking across the last 90 days at ${state.bankName} for anything that repeats.</p>
+      <div class="scan-counter mono" id="scanCounter">0</div>
+      <div class="progress-track"><div class="progress-fill" id="scanFill"></div></div>
+      <div class="scan-results" id="scanResults" hidden></div>
+      <button type="button" class="btn-primary" id="reviewBtn" hidden>Review & migrate →</button>
+    </div>`;
+
+  const counterEl = els.screenRoot.querySelector('#scanCounter');
+  const fillEl = els.screenRoot.querySelector('#scanFill');
+  const headingEl = els.screenRoot.querySelector('#scanHeading');
+  const subEl = els.screenRoot.querySelector('#scanSub');
+  const resultsEl = els.screenRoot.querySelector('#scanResults');
+  const reviewBtn = els.screenRoot.querySelector('#reviewBtn');
+
+  let count = 0;
+  const total = p.scanTotal;
+  const step = Math.max(1, Math.ceil(total / 60));
+  const iv = setInterval(() => {
+    count = Math.min(total, count + step);
+    counterEl.textContent = count;
+    fillEl.style.width = (count / total * 100) + '%';
+    if (count >= total) {
+      clearInterval(iv);
+      schedule(showResults, 400);
+    }
+  }, T.scanTickInterval);
+  activeTimers.push(iv);
+
+  function showResults() {
+    headingEl.textContent = `${p.transactions.length} recurring payments found`;
+    subEl.textContent = `Everything that repeats at ${state.bankName}, ready to move to TD.`;
+    resultsEl.hidden = false;
+    p.transactions.forEach((t, i) => {
+      schedule(() => {
+        const row = document.createElement('div');
+        row.className = 'scan-row';
+        row.innerHTML = `
+          <span class="tx-icon">${t.icon}</span>
+          <div class="tx-info"><div class="tx-name">${t.name}</div><div class="tx-sub">${t.sub}</div></div>
+          <span class="tx-badge">${t.cat}</span>`;
+        resultsEl.appendChild(row);
+        if (i === p.transactions.length - 1) {
+          schedule(() => { reviewBtn.hidden = false; reviewBtn.classList.add('fade-in'); }, T.txRowStagger + 200);
+        }
+      }, i * T.txRowStagger);
+    });
+  }
+
+  reviewBtn.addEventListener('click', () => goTo(5));
+}
+
+/* ---------------- Screen 5: review & confirm ---------------- */
+// INPUT PAUSE: "Confirm & migrate →" (disabled at zero)
+function renderReview() {
+  els.screenRoot.innerHTML = `
+    <div class="screen-pad">
+      <h1>Review & confirm</h1>
+      <p class="subcopy">Uncheck anything you'd rather handle yourself.</p>
+      <div class="review-list" id="reviewList">
+        ${state.selectedTx.map((t, i) => `
+          <label class="review-row">
+            <input type="checkbox" class="review-check" data-i="${i}" ${t.selected ? 'checked' : ''}>
+            <span class="tx-icon">${t.icon}</span>
+            <span class="tx-info"><span class="tx-name">${t.name}</span><span class="tx-sub">${t.sub}</span></span>
+            <span class="tx-badge">${t.cat}</span>
+          </label>`).join('')}
+      </div>
+      <div class="review-footer">
+        <span class="mono" id="reviewCount"></span>
+        <button type="button" class="btn-primary" id="confirmBtn">Confirm & migrate →</button>
+      </div>
+    </div>`;
+
+  const countEl = els.screenRoot.querySelector('#reviewCount');
+  const confirmBtn = els.screenRoot.querySelector('#confirmBtn');
+
+  function updateCount() {
+    const checked = state.selectedTx.filter(t => t.selected).length;
+    countEl.textContent = `${checked} of ${state.selectedTx.length} selected`;
+    confirmBtn.disabled = checked === 0;
+  }
+
+  els.screenRoot.querySelectorAll('.review-check').forEach(cb => {
+    cb.addEventListener('change', () => {
+      state.selectedTx[+cb.dataset.i].selected = cb.checked;
+      updateCount();
+    });
+  });
+
+  updateCount();
+  confirmBtn.addEventListener('click', () => goTo(6));
+}
+
+/* ---------------- Screen 6: agent at work (AUTO, centerpiece) ---------------- */
+// INPUT PAUSE (at the end): "Continue →"
+function renderAgent() {
+  const items = state.selectedTx.filter(t => t.selected);
+  els.screenRoot.innerHTML = `
+    <div class="agent-screen">
+      <div class="agent-terminal">
+        <div class="terminal-header">
+          <span>⚡ agent_core.log</span>
+          <span class="pill-badge dark"><span class="dot"></span> reasoning live</span>
+        </div>
+        <div class="terminal-log" id="termLog"><span class="term-cursor">█</span></div>
+      </div>
+      <div class="agent-checklist">
+        <div class="checklist-label">MIGRATION CHECKLIST</div>
+        <div class="checklist-counter mono" id="checkCounter">0/${items.length}</div>
+        <div class="progress-track dark"><div class="progress-fill" id="checkFill"></div></div>
+        <div class="checklist-items">
+          ${items.map((t, i) => `
+            <div class="checklist-row">
+              <span class="glyph" id="glyph-${i}">○</span>
+              <span class="check-name">${t.name}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="agent-footer" id="agentFooter" hidden>
+      <span class="mono" id="agentFooterText"></span>
+      <button type="button" class="btn-primary" id="continueBtn">Continue →</button>
+    </div>`;
+
+  const termLog = els.screenRoot.querySelector('#termLog');
+  const cursorEl = els.screenRoot.querySelector('.term-cursor');
+  const checkFill = els.screenRoot.querySelector('#checkFill');
+  const checkCounter = els.screenRoot.querySelector('#checkCounter');
+  const footer = els.screenRoot.querySelector('#agentFooter');
+  const footerText = els.screenRoot.querySelector('#agentFooterText');
+  const continueBtn = els.screenRoot.querySelector('#continueBtn');
+
+  let doneCount = 0;
+
+  function appendLine(text, type) {
+    const line = document.createElement('div');
+    line.className = 'term-line term-' + type;
+    line.textContent = text;
+    termLog.insertBefore(line, cursorEl);
+    termLog.scrollTop = termLog.scrollHeight;
+  }
+  function setGlyph(i, ch, cls) {
+    const g = els.screenRoot.querySelector('#glyph-' + i);
+    if (g) { g.textContent = ch; g.className = 'glyph ' + cls; }
+  }
+  function updateDone() {
+    doneCount++;
+    checkCounter.textContent = `${doneCount}/${items.length}`;
+    checkFill.style.width = (doneCount / items.length * 100) + '%';
+  }
+
+  function moveCursorTo(cursor, target, cb) {
+    const panel = cursor.parentElement;
+    const panelRect = panel.getBoundingClientRect();
+    const rect = target.getBoundingClientRect();
+    const x = rect.left - panelRect.left + rect.width / 2;
+    const y = rect.top - panelRect.top + rect.height / 2;
+    cursor.style.transition = `left ${T.killerCursorSpeed}ms cubic-bezier(.22,.61,.36,1), top ${T.killerCursorSpeed}ms cubic-bezier(.22,.61,.36,1)`;
+    cursor.style.left = x + 'px';
+    cursor.style.top = y + 'px';
+    schedule(cb, T.killerCursorSpeed);
+  }
+
+  function rippleAt(panel, target) {
+    const r = document.createElement('div');
+    r.className = 'click-ripple';
+    const rect = target.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    r.style.left = (rect.left - panelRect.left + rect.width / 2) + 'px';
+    r.style.top = (rect.top - panelRect.top + rect.height / 2) + 'px';
+    panel.appendChild(r);
+    schedule(() => r.remove(), 500);
+  }
+
+  function typeText(el, text, delay, cb) {
+    let i = 0;
+    function step() {
+      el.textContent = text.slice(0, i);
+      i++;
+      if (i <= text.length) schedule(step, delay);
+      else cb();
+    }
+    step();
+  }
+
+  function runKillerShot(cb) {
+    const panel = document.createElement('div');
+    panel.className = 'killer-panel';
+    panel.innerHTML = `
+      <div class="browser-mock">
+        <div class="browser-chrome">
+          <span class="traffic"></span><span class="traffic"></span><span class="traffic"></span>
+          <div class="browser-address">northline.ca/account/payment-method</div>
+        </div>
+        <div class="browser-page">
+          <div class="portal-header">NorthLine Communications</div>
+          <div class="portal-body">
+            <div class="portal-sidebar">
+              <div class="portal-nav-item">Overview</div>
+              <div class="portal-nav-item active">Payment Method</div>
+              <div class="portal-nav-item">Billing History</div>
+              <div class="portal-nav-item">Support</div>
+            </div>
+            <div class="portal-main">
+              <div class="portal-panel-title">Pre-Authorized Payment Details</div>
+              <div class="portal-field-row">
+                <span class="portal-field-label">Bank account</span>
+                <span class="portal-field-value" id="portalValue">•••• •••• 8823 — First National Bank</span>
+                <button type="button" class="portal-edit-btn" id="portalEdit">Edit</button>
+              </div>
+              <button type="button" class="portal-save-btn" id="portalSave" hidden>Save</button>
+            </div>
+          </div>
+          <div class="cursor-arrow" id="cursorArrow">➤</div>
+          <div class="toast" id="portalToast">Payment method updated.</div>
+        </div>
+      </div>`;
+    termLog.parentElement.insertBefore(panel, termLog);
+    requestAnimationFrame(() => panel.classList.add('expanded'));
+
+    const cursor = panel.querySelector('#cursorArrow');
+    const editBtn = panel.querySelector('#portalEdit');
+    const valueEl = panel.querySelector('#portalValue');
+    const saveBtn = panel.querySelector('#portalSave');
+    const toast = panel.querySelector('#portalToast');
+    const pageEl = panel.querySelector('.browser-page');
+
+    schedule(() => {
+      moveCursorTo(cursor, editBtn, () => {
+        rippleAt(pageEl, editBtn);
+        schedule(() => {
+          editBtn.hidden = true;
+          valueEl.textContent = '';
+          saveBtn.hidden = false;
+          typeText(valueEl, 'TD Canada Trust — •••• •••• 4471', T.killerTypeDelay, () => {
+            schedule(() => {
+              moveCursorTo(cursor, saveBtn, () => {
+                rippleAt(pageEl, saveBtn);
+                schedule(() => {
+                  toast.classList.add('show');
+                  schedule(() => {
+                    panel.classList.remove('expanded');
+                    schedule(() => { panel.remove(); cb(); }, 500);
+                  }, 1200);
+                }, 150);
+              });
+            }, 200);
+          });
+        }, 150);
+      });
+    }, 500);
+  }
+
+  function processTx(i) {
+    if (i >= items.length) { finish(); return; }
+    const tx = items[i];
+    const lines = agentLogLines(tx);
+    setGlyph(i, '◐', 'glyph-mid');
+    appendLine(lines[0].text, lines[0].type);
+    if (tx.killerShot) {
+      schedule(() => {
+        appendLine(lines[1].text, lines[1].type);
+        schedule(() => runKillerShot(() => {
+          appendLine(lines[2].text, lines[2].type);
+          setGlyph(i, '✓', 'glyph-ok');
+          updateDone();
+          schedule(() => processTx(i + 1), T.termLineDelay);
+        }), T.termAfterOk);
+      }, T.termAfterOk);
+    } else {
+      schedule(() => {
+        appendLine(lines[1].text, lines[1].type);
+        const ok = lines[1].type === 'ok';
+        setGlyph(i, ok ? '✓' : '!', ok ? 'glyph-ok' : 'glyph-warn');
+        updateDone();
+        schedule(() => processTx(i + 1), T.termLineDelay);
+      }, T.termAfterOk);
+    }
+  }
+
+  function finish() {
+    const autoCount = items.filter(t => !t.needsApproval).length;
+    const flaggedCount = items.filter(t => t.needsApproval).length;
+    state.finalAuto = autoCount;
+    state.finalFlagged = flaggedCount;
+    footer.hidden = false;
+    footerText.textContent = `Run complete — ${autoCount} migrated, ${flaggedCount} awaiting your approval.`;
+    footer.classList.add('fade-in');
+  }
+
+  continueBtn.addEventListener('click', () => {
+    goTo(state.finalFlagged > 0 ? 7 : 8);
+  });
+
+  if (items.length === 0) { finish(); return; }
+  schedule(() => processTx(0), T.termLineDelay);
+}
+
+/* ---------------- Screen 7: approval ---------------- */
+// INPUT PAUSE: type name + tap "Approve & finish →"
+function renderApproval() {
+  const flaggedItems = state.selectedTx.filter(t => t.selected && t.needsApproval);
+  els.screenRoot.innerHTML = `
+    <div class="screen-pad">
+      <h1>One needs your sign-off</h1>
+      ${flaggedItems.map(t => `
+        <div class="approval-card">
+          <span class="tx-icon">${t.icon}</span>
+          <span class="tx-info"><span class="tx-name">${t.name}</span><span class="tx-sub">${t.sub}</span></span>
+        </div>`).join('')}
+      <p class="subcopy" style="margin-top:16px;">Employers require a signed form to change payroll deposits. The agent has pre-filled it — it just needs your signature.</p>
+      <label class="field-label">Type your full name to sign</label>
+      <input type="text" id="signInput" placeholder="Full name">
+      <div style="margin-top:22px;">
+        <button type="button" class="btn-primary" id="approveBtn" disabled>Approve & finish →</button>
+      </div>
+    </div>`;
+
+  const signInput = els.screenRoot.querySelector('#signInput');
+  const approveBtn = els.screenRoot.querySelector('#approveBtn');
+  signInput.addEventListener('input', () => { approveBtn.disabled = !signInput.value.trim(); });
+  approveBtn.addEventListener('click', () => {
+    state.signatureName = signInput.value.trim();
+    goTo(8);
+  });
+}
+
+/* ---------------- Screen 8: done ---------------- */
+function renderDone() {
+  const N = state.selectedTx.filter(t => t.selected).length;
+  const auto = state.finalAuto;
+  const flagged = state.finalFlagged;
+  const flaggedItem = state.selectedTx.find(t => t.selected && t.needsApproval);
+  if (flagged > 0 && !state.signatureName) state.signatureName = 'Demo User';
+
+  els.screenRoot.innerHTML = `
+    <div class="screen-pad done-screen">
+      <div class="done-badge">✓</div>
+      <h1>${auto} of ${N} payments moved automatically.</h1>
+      ${flagged > 0 ? `<p class="subcopy">${flagged} approved by you — everything is live at TD.</p>` : `<p class="subcopy">Everything is live at TD.</p>`}
+      <div class="done-summary-grid">
+        <div class="done-summary-col">
+          <div class="done-summary-title">Moved ✓</div>
+          ${state.selectedTx.filter(t => t.selected && !t.needsApproval).map(t => `<div class="done-row">${t.icon} ${t.name}</div>`).join('')}
+        </div>
+        ${flagged > 0 ? `
+        <div class="done-summary-col">
+          <div class="done-summary-title">Signed & sent ✓</div>
+          ${state.selectedTx.filter(t => t.selected && t.needsApproval).map(t => `<div class="done-row">${t.icon} ${t.name}</div>`).join('')}
+        </div>` : ''}
+      </div>
+      ${flagged > 0 ? `
+      <div class="pdf-card">
+        <div class="pdf-card-title">Direct deposit form</div>
+        <div class="pdf-card-sub">Pre-filled with your new TD account and signed by ${state.signatureName}</div>
+        <button type="button" class="btn-primary" id="pdfBtn">Download PDF</button>
+      </div>` : ''}
+    </div>`;
+
+  if (flagged > 0) {
+    document.getElementById('pdfBtn').addEventListener('click', () => generatePdf(flaggedItem));
+  }
+}
+
+function generatePdf(tx) {
+  const btn = document.getElementById('pdfBtn');
+  if (!window.jspdf) {
+    if (btn) { btn.textContent = 'PDF unavailable offline'; btn.disabled = true; }
+    return;
+  }
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.setTextColor(0, 138, 0);
+    doc.text('TD Direct Deposit Authorization', 54, 60);
+    doc.setDrawColor(220, 227, 220); doc.line(54, 72, 558, 72);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(28, 28, 28);
+    let y = 110;
+    const row = (label, value) => {
+      doc.setFont('helvetica', 'bold'); doc.text(label, 54, y);
+      doc.setFont('helvetica', 'normal'); doc.text(String(value), 220, y);
+      y += 28;
+    };
+    row('Employee name:', state.signatureName);
+    row('Employer:', tx.name);
+    row('New institution:', 'TD Canada Trust');
+    row('Transit number:', '01847');
+    row('Institution number:', '004');
+    row('Account number:', '•••• •••• 4471');
+    row('Effective date:', new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' }));
+    y += 26;
+    doc.setDrawColor(28, 28, 28); doc.line(54, y, 300, y);
+    y += 16;
+    doc.setFont('helvetica', 'italic'); doc.setFontSize(13);
+    doc.text(state.signatureName, 60, y - 6);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(97, 97, 97);
+    doc.text('Signature', 54, y + 10);
+    doc.text('Generated automatically by SwitchEasy · sample data for demo purposes', 54, 740);
+    doc.save('TD-Direct-Deposit-Authorization.pdf');
+  } catch (e) {
+    if (btn) { btn.textContent = 'PDF unavailable offline'; btn.disabled = true; }
+  }
+}
+
+const screens = {
+  0: renderScenario, 1: renderWelcome, 2: renderInstitution, 3: renderConnect,
+  4: renderScan, 5: renderReview, 6: renderAgent, 7: renderApproval, 8: renderDone,
+};
+
+renderRail();
+screens[0]();
+</script>
+</body>
+</html>
