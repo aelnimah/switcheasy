@@ -23,10 +23,21 @@ https://<your-github-username>.github.io/switcheasy
 
 ## Editing the demo
 
+The flow: landing → welcome → pick old institution → connect (read-only) →
+scan → review → **access plan** (the agent analyzes how each biller
+authenticates and groups them — one Google sign-in can unlock several
+accounts, Rogers & Fido share a Rogers ID, CRA needs its own) → credentials
+one group at a time → a single consent → the agent runs (terminal +
+browser-automation "killer shot" on the Rogers portal) → draw-to-sign the
+direct-deposit form → done, with a downloadable PDF carrying the drawn
+signature.
+
 All editable content lives in `config.js`:
 
 - `banks` — the institution picker (name, logo path, brand color for the fake OAuth re-theme).
-- `personas` — the three scenarios (newcomer / switcher / small business), each with its own transaction list. Mark a transaction `killerShot: true` to trigger the fake browser-automation sequence on Screen 6 (only one per persona is recommended for pacing).
+- `credentialGroups` — the sign-ins the agent can ask for (Google, Rogers, TELUS, CRA, Square), with brand colors and copy.
+- `accessInfo` — how each access type is explained on the access-plan screen.
+- `personas` — the three scenarios (newcomer / switcher / small business), each with its own transaction list. Each transaction's `access` field points at a credential group (or `none` / `signature`). Mark a transaction `killerShot: true` to trigger the fake browser-automation sequence during the agent run (only one per persona is recommended for pacing).
 - `timings` — every animation/timing value in the app (scan speed, terminal pacing, cursor speed, etc.), in milliseconds.
 - `agentLogLines(tx)` — the terminal "voice" per transaction. Edit the copy here without touching the animation engine in `index.html`.
 
