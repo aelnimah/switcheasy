@@ -37,7 +37,7 @@ All editable content lives in `config.js`:
 - `banks` — the institution picker (name, logo path, brand color for the fake OAuth re-theme).
 - `credentialGroups` — the sign-ins the agent can ask for (Google, Rogers, TELUS, CRA, Square), with brand colors and copy.
 - `accessInfo` — how each access type is explained on the access-plan screen.
-- `personas` — the three scenarios (newcomer / switcher / small business), each with its own transaction list. Each transaction's `access` field points at a credential group (or `none` / `signature`). Mark a transaction `killerShot: true` to trigger the fake browser-automation sequence during the agent run (only one per persona is recommended for pacing).
+- `personas` — the two paths (personal / small business), each with its own transaction list. Each transaction's `access` field points at a credential group (or `none` / `signature`). Mark a transaction `killerShot: true` to trigger the fake browser-automation sequence during the agent run (only one per persona is recommended for pacing).
 - `timings` — every animation/timing value in the app (scan speed, terminal pacing, cursor speed, etc.), in milliseconds.
 - `agentLogLines(tx)` — the terminal "voice" per transaction. Edit the copy here without touching the animation engine in `index.html`.
 
@@ -54,8 +54,8 @@ shows a broken image icon.
 |---|---|
 | `assets/logos/switcheasy.png` | app mark in the chrome bar and on the landing page (falls back to `td.svg`) |
 | `assets/logos/rbc.png`, `scotiabank.png`, `bmo.png`, `cibc.png` | bank tiles + the fake OAuth header (falls back to the bundled `.svg`, then a letter) |
-| `assets/personas/newcomer.png`, `switcher.png`, `smallbiz.png` | the three landing cards |
-| `assets/billers/rogers.png`, `fido.png`, `netflix.png`, `spotify.png`, `goodlife.png`, `hydro-one.png`, `toronto-hydro.png`, `td-insurance.png`, `manulife.png`, `telus.png`, `cra.png`, `landlord.png`, `td-payroll.png`, `google.png`, `sysco.png`, `lease.png`, `wagepoint.png`, `square.png`, `enbridge.png`, `wsib.png`, `payroll.png` | every biller row, credential card, checklist chip and summary; `rogers.png` also appears in the fake portal header |
+| `assets/personas/personal.png`, `smallbiz.png` | the landing cards |
+| `assets/billers/rogers.png`, `fido.png`, `netflix.png`, `spotify.png`, `goodlife.png`, `hydro-one.png`, `toronto-hydro.png`, `td-insurance.png`, `manulife.png`, `telus.png`, `cra.png`, `landlord.png`, `td-payroll.png`, `google.png`, `sysco.png`, `lease.png`, `wagepoint.png`, `square.png`, `enbridge.png`, `wsib.png`, `uber-eats.png` | every biller row, credential card, checklist chip and summary; `rogers.png` also appears in the fake portal header |
 
 Square-ish PNGs with transparent backgrounds around 128–256 px work best —
 they're rendered inside a 40 px tile at 72 % scale, so anything crisp at

@@ -139,7 +139,7 @@
   .trust-row .sep{color:var(--line);}
   .trust-row svg{color:var(--td-green-dark);}
   .landing-picker-label{font-size:12px;font-weight:700;color:var(--ink-soft);margin:44px 0 18px;letter-spacing:.09em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
-  .scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:880px;}
+  .scenario-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;width:100%;max-width:680px;}
   .scenario-card{
     text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;
     padding:24px 22px;cursor:pointer;transition:border-color .2s, transform .2s, box-shadow .2s;
@@ -559,8 +559,8 @@ function advanceFromHud() {
   clearAllTimers();
   switch (state.screen) {
     case 0:
-      state.personaKey = 'switcher';
-      state.persona = personas.switcher;
+      state.personaKey = 'personal';
+      state.persona = personas.personal;
       state.selectedTx = state.persona.transactions.map(t => ({ ...t, selected: true }));
       goTo(1);
       break;
@@ -1331,12 +1331,12 @@ function renderSignature() {
           ${tile(t)}
           <span class="tx-info"><span class="tx-name">${t.name}</span><span class="tx-sub">${t.sub}</span></span>
         </div>`).join('')}
-      <p class="subcopy" style="margin-top:16px;">Employers require a signed form to change payroll deposits. The agent has pre-filled it — it just needs your signature.</p>
+      <p class="subcopy" style="margin-top:16px;">${first.approvalNote || 'A signed form is required for this change. The agent has pre-filled it — it just needs your signature.'}</p>
       <div class="sign-cols">
         <div>
           <div class="doc-preview">
-            <div class="doc-preview-title">Direct Deposit Authorization · pre-filled</div>
-            <div class="doc-row"><span class="doc-row-label">Employer</span><span class="doc-row-value">${first.name}</span></div>
+            <div class="doc-preview-title">${first.formName || 'Direct Deposit Authorization'} · pre-filled</div>
+            <div class="doc-row"><span class="doc-row-label">${first.formParty || 'Employer'}</span><span class="doc-row-value">${first.name}</span></div>
             <div class="doc-row"><span class="doc-row-label">New institution</span><span class="doc-row-value">TD Canada Trust</span></div>
             <div class="doc-row"><span class="doc-row-label">Account</span><span class="doc-row-value mono">•••• •••• 4471</span></div>
             <div class="doc-sig-slot" id="docSigSlot"></div>
@@ -1471,7 +1471,7 @@ function renderDone() {
       <div class="pdf-card">
         <div class="pdf-icon">📄</div>
         <div class="pdf-card-text">
-          <div class="pdf-card-title">Direct deposit form</div>
+          <div class="pdf-card-title">${flaggedItem && flaggedItem.formName ? flaggedItem.formName : 'Direct deposit form'}</div>
           <div class="pdf-card-sub">Pre-filled with your new TD account and signed by ${state.signatureName}</div>
         </div>
         <button type="button" class="btn-primary" id="pdfBtn">Download PDF</button>
@@ -1493,7 +1493,7 @@ function generatePdf(tx) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'pt', format: 'letter' });
     doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.setTextColor(0, 138, 0);
-    doc.text('TD Direct Deposit Authorization', 54, 60);
+    doc.text('TD ' + (tx.formName || 'Direct Deposit Authorization'), 54, 60);
     doc.setDrawColor(220, 227, 220); doc.line(54, 72, 558, 72);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(28, 28, 28);
     let y = 110;
@@ -1502,8 +1502,8 @@ function generatePdf(tx) {
       doc.setFont('helvetica', 'normal'); doc.text(String(value), 220, y);
       y += 28;
     };
-    row('Employee name:', state.signatureName);
-    row('Employer:', tx.name);
+    row(tx.formParty === 'Payroll provider' ? 'Authorized signatory:' : 'Employee name:', state.signatureName);
+    row((tx.formParty || 'Employer') + ':', tx.name);
     row('New institution:', 'TD Canada Trust');
     row('Transit number:', '01847');
     row('Institution number:', '004');
