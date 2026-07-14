@@ -8,7 +8,7 @@
 //
 //   assets/logos/switcheasy.png   → app mark in the chrome bar & landing
 //   assets/logos/rbc.png (etc.)   → bank tiles (falls back to the .svg, then a letter)
-//   assets/personas/*.png         → the three landing cards
+//   assets/personas/*.png         → the landing cards
 //   assets/billers/*.png          → every biller row, checklist chip and summary
 // ───────────────────────────────────────────────────────────────────────────
 
@@ -25,11 +25,12 @@ export const banks = [
 // Credential groups the agent can ask for. Transactions reference these via
 // their `access` field. Order here = order the user is asked in.
 export const credentialGroups = {
-  google: { name: "Google",         tag: "Sign in with Google",  brand: "#1A73E8", light: true,  field: "Email",             logo: "assets/billers/google.png", blurb: "One sign-in covers every account linked to your Google identity." },
-  rogers: { name: "Rogers",         tag: "Rogers ID",            brand: "#DA291C", light: false, field: "Email or username",  logo: "assets/billers/rogers.png", blurb: "Rogers and Fido share a single Rogers ID — one sign-in covers both." },
-  telus:  { name: "TELUS",          tag: "TELUS My Account",     brand: "#4B286D", light: false, field: "Email",             logo: "assets/billers/telus.png",  blurb: "Needed to update billing on your TELUS services." },
-  cra:    { name: "CRA My Account", tag: "Government of Canada", brand: "#26374A", light: false, field: "CRA user ID",       logo: "assets/billers/cra.png",    blurb: "Needed to update your direct deposit details with the CRA." },
-  square: { name: "Square",         tag: "Square Dashboard",     brand: "#3E4348", light: false, field: "Email",             logo: "assets/billers/square.png", blurb: "Needed to change where your card sales settle." },
+  google: { name: "Google",         tag: "Sign in with Google",  brand: "#1A73E8", light: true,  field: "Email",             logo: "assets/billers/google.png",    blurb: "One sign-in covers every account linked to your Google identity." },
+  rogers: { name: "Rogers",         tag: "Rogers ID",            brand: "#DA291C", light: false, field: "Email or username",  logo: "assets/billers/rogers.png",    blurb: "Rogers and Fido share a single Rogers ID — one sign-in covers both." },
+  telus:  { name: "TELUS",          tag: "TELUS My Account",     brand: "#4B286D", light: false, field: "Email",             logo: "assets/billers/telus.png",     blurb: "Needed to update billing on your TELUS services." },
+  cra:    { name: "CRA My Account", tag: "Government of Canada", brand: "#26374A", light: false, field: "CRA user ID",       logo: "assets/billers/cra.png",       blurb: "Needed to update your banking details with the CRA." },
+  square: { name: "Square",         tag: "Square Dashboard",     brand: "#3E4348", light: false, field: "Email",             logo: "assets/billers/square.png",    blurb: "Needed to change where your card sales settle." },
+  uber:   { name: "Uber Eats",      tag: "Merchant portal",      brand: "#06C167", light: false, field: "Email",             logo: "assets/billers/uber-eats.png", blurb: "Needed to change where your delivery payouts are deposited." },
 };
 
 // How each access type is explained on the analysis screen.
@@ -39,29 +40,16 @@ export const accessInfo = {
   telus:     { badge: "TELUS",      note: "TELUS My Account sign-in required" },
   cra:       { badge: "CRA",        note: "CRA My Account sign-in required" },
   square:    { badge: "Square",     note: "Square Dashboard sign-in required" },
+  uber:      { badge: "Uber Eats",  note: "merchant portal sign-in required" },
   none:      { badge: "No login",   note: "no login needed — handled from the TD side" },
   signature: { badge: "Signature",  note: "needs one signed form — prepared for you" },
 };
 
 export const personas = {
-  newcomer: {
-    label: "Newcomer to Canada",
-    tagline: "Setting up your first Canadian accounts.",
-    img: "assets/personas/newcomer.png",
-    icon: "🧳",
-    scanTotal: 89,
-    transactions: [
-      { name: "Fido Mobile", sub: "Phone · $55.00/mo", cat: "PAD", icon: "📱", logo: "assets/billers/fido.png", access: "rogers", accessNote: "Fido is a Rogers brand — same Rogers ID", method: "Updating billing account directly with the biller", needsApproval: false },
-      { name: "Toronto Hydro", sub: "Electricity · $96.10/mo", cat: "Bill payee", icon: "💡", logo: "assets/billers/toronto-hydro.png", access: "none", method: "Re-registering payee with TD account", needsApproval: false },
-      { name: "Landlord", sub: "Rent autodeposit · $1,650/mo", cat: "e-Transfer", icon: "🏠", logo: "assets/billers/landlord.png", access: "none", method: "Re-registering autodeposit email", needsApproval: false },
-      { name: "IRCC / CRA", sub: "Benefit deposit · $412/mo", cat: "Direct deposit", icon: "🏛️", logo: "assets/billers/cra.png", access: "cra", method: "Updating direct deposit details with CRA", needsApproval: false },
-      { name: "New Employer Payroll", sub: "Direct deposit · $2,480/biweekly", cat: "Direct deposit", icon: "💼", logo: "assets/billers/payroll.png", access: "signature", method: "Needs a signed direct-deposit form for HR", needsApproval: true },
-    ],
-  },
-  switcher: {
-    label: "Switching from another bank",
-    tagline: "Moving everything from another bank.",
-    img: "assets/personas/switcher.png",
+  personal: {
+    label: "Personal",
+    tagline: "Your bills, subscriptions and deposits — moved for you.",
+    img: "assets/personas/personal.png",
     icon: "🔁",
     scanTotal: 247,
     transactions: [
@@ -76,24 +64,28 @@ export const personas = {
       { name: "TELUS", sub: "Home line · $45.00/mo", cat: "PAD", icon: "☎️", logo: "assets/billers/telus.png", access: "telus", method: "Updating billing account directly with the biller", needsApproval: false },
       { name: "CRA · Child Benefit", sub: "Direct deposit · $560.00/mo", cat: "Direct deposit", icon: "🏛️", logo: "assets/billers/cra.png", access: "cra", method: "Updating direct deposit details with CRA", needsApproval: false },
       { name: "Landlord", sub: "Rent autodeposit · $1,850/mo", cat: "e-Transfer", icon: "🏠", logo: "assets/billers/landlord.png", access: "none", method: "Re-registering autodeposit email", needsApproval: false },
-      { name: "TD Canada Trust", sub: "Payroll deposit · $3,200/biweekly", cat: "Direct deposit", icon: "💼", logo: "assets/billers/td-payroll.png", access: "signature", method: "Needs a signed direct-deposit form for HR", needsApproval: true },
+      { name: "TD Canada Trust", sub: "Payroll deposit · $3,200/biweekly", cat: "Direct deposit", icon: "💼", logo: "assets/billers/td-payroll.png", access: "signature", method: "Needs a signed direct-deposit form for HR", needsApproval: true,
+        formName: "Direct Deposit Authorization", formParty: "Employer", approvalNote: "Employers require a signed form to change payroll deposits. The agent has pre-filled it — it just needs your signature." },
     ],
   },
   smallBiz: {
     label: "Small business",
-    tagline: "Moving your business — vendors, payroll, suppliers.",
+    tagline: "Suppliers, payroll, payouts — your whole operation, moved.",
     img: "assets/personas/smallbiz.png",
     icon: "☕",
     scanTotal: 512,
     transactions: [
+      { name: "Rogers Business", sub: "Internet & phone · $135/mo", cat: "PAD", icon: "📡", logo: "assets/billers/rogers.png", access: "rogers", method: "Updating billing account directly with the biller", needsApproval: false, killerShot: true },
+      { name: "Square", sub: "POS deposits · ~$1,900/day", cat: "Merchant deposit", icon: "💳", logo: "assets/billers/square.png", access: "square", method: "Updating settlement account with processor", needsApproval: false },
+      { name: "Uber Eats", sub: "Delivery payouts · weekly", cat: "Merchant deposit", icon: "🛵", logo: "assets/billers/uber-eats.png", access: "uber", method: "Updating payout account with merchant portal", needsApproval: false },
       { name: "Sysco Foods", sub: "Supplier PAD · $2,340/mo", cat: "PAD", icon: "🚚", logo: "assets/billers/sysco.png", access: "none", method: "Filing new PAD authorization electronically", needsApproval: false },
       { name: "Commercial Lease", sub: "Rent PAD · $4,100/mo", cat: "PAD", icon: "🏢", logo: "assets/billers/lease.png", access: "none", method: "Filing new PAD authorization electronically", needsApproval: false },
-      { name: "Wagepoint Payroll", sub: "Staff payroll · 8 employees", cat: "Payroll debit", icon: "💼", logo: "assets/billers/wagepoint.png", access: "signature", method: "Needs a signed funding-change form", needsApproval: true },
-      { name: "Square", sub: "POS deposits · daily", cat: "Merchant deposit", icon: "💳", logo: "assets/billers/square.png", access: "square", method: "Updating settlement account with processor", needsApproval: false },
+      { name: "Wagepoint Payroll", sub: "Staff payroll · 8 employees", cat: "Payroll debit", icon: "💼", logo: "assets/billers/wagepoint.png", access: "signature", method: "Needs a signed funding-change form", needsApproval: true,
+        formName: "Payroll Funding Authorization", formParty: "Payroll provider", approvalNote: "Payroll providers require a signed authorization to change the account payroll is funded from. The agent has pre-filled it — it just needs your signature." },
+      { name: "CRA · Payroll remittance", sub: "Source deductions · monthly", cat: "PAD", icon: "🏛️", logo: "assets/billers/cra.png", access: "cra", method: "Updating pre-authorized debit with CRA", needsApproval: false },
       { name: "Enbridge", sub: "Gas · $310/mo", cat: "Bill payee", icon: "🔥", logo: "assets/billers/enbridge.png", access: "none", method: "Re-registering payee with TD account", needsApproval: false },
       { name: "Toronto Hydro", sub: "Electricity · $445/mo", cat: "Bill payee", icon: "💡", logo: "assets/billers/toronto-hydro.png", access: "none", method: "Re-registering payee with TD account", needsApproval: false },
       { name: "WSIB", sub: "Premiums · $280/mo", cat: "PAD", icon: "🛡️", logo: "assets/billers/wsib.png", access: "none", method: "Filing new PAD authorization electronically", needsApproval: false },
-      { name: "Rogers Business", sub: "Internet & phone · $135/mo", cat: "PAD", icon: "📡", logo: "assets/billers/rogers.png", access: "rogers", method: "Updating billing account directly with the biller", needsApproval: false, killerShot: true },
     ],
   },
 };
