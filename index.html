@@ -16,7 +16,6 @@
     --td-green:#008A00; --td-green-dark:#036303; --td-green-pale:#E6F4E6;
     --ink:#1C1C1C; --ink-soft:#616161; --paper:#F4F7F4; --surface:#FFFFFF; --line:#DCE3DC;
     --amber:#A66B00; --amber-pale:#FBF0DC;
-    --terminal-bg:#0C1710; --terminal-line:#1B2E22; --terminal-text:#CFEFDA; --terminal-dim:#5E8770;
     --shadow-card:0 1px 2px rgba(28,28,28,.04), 0 24px 64px -32px rgba(28,28,28,.25);
     --shadow-float:0 20px 50px -22px rgba(0,0,0,.28);
   }
@@ -96,7 +95,6 @@
     overflow:hidden;position:relative;display:flex;flex-direction:column;min-height:640px;
     transition:background .4s ease, border-color .4s ease;
   }
-  #device.terminal-mode{background:var(--terminal-bg);border-color:var(--terminal-line);}
   #screen-root{flex:1;display:flex;flex-direction:column;}
   .screen-pad{flex:1;display:flex;flex-direction:column;padding:48px 60px;}
 
@@ -105,8 +103,6 @@
 
   .pill-badge{display:inline-flex;align-items:center;gap:8px;background:var(--td-green-pale);color:var(--td-green-dark);border-radius:999px;padding:6px 14px;font-weight:600;font-size:13px;margin-bottom:20px;width:fit-content;}
   .pill-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--td-green);animation:pulse 1.6s infinite;}
-  .pill-badge.dark{background:rgba(207,239,218,.08);color:var(--terminal-text);margin-bottom:0;}
-  .pill-badge.dark .dot{background:#5CF07A;}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(1.35);}}
 
   .btn-primary{
@@ -133,16 +129,16 @@
   @keyframes rowIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
   /* ---------- Screen 0: landing ---------- */
-  .landing{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:10px;}
-  .landing-mark{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
-  .landing-mark img{width:46px;height:46px;object-fit:contain;}
-  .landing-mark .landing-wordmark{font-size:30px;font-weight:700;letter-spacing:-0.02em;}
-  .landing h1{font-size:42px;max-width:640px;}
-  .landing .subcopy{max-width:560px;}
-  .trust-row{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--ink-soft);margin-top:18px;flex-wrap:wrap;justify-content:center;}
+  .landing{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:58px;padding-bottom:58px;}
+  .landing-mark{display:flex;align-items:center;gap:15px;margin-bottom:30px;}
+  .landing-mark img{width:52px;height:52px;object-fit:contain;border-radius:12px;box-shadow:0 8px 20px -10px rgba(0,138,0,.5);}
+  .landing-mark .landing-wordmark{font-size:31px;font-weight:700;letter-spacing:-0.02em;}
+  .landing h1{font-size:44px;max-width:660px;margin-bottom:18px;}
+  .landing .subcopy{max-width:580px;}
+  .trust-row{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-soft);margin-top:22px;flex-wrap:wrap;justify-content:center;}
   .trust-row .sep{color:var(--line);}
   .trust-row svg{color:var(--td-green-dark);}
-  .landing-picker-label{font-size:13px;font-weight:700;color:var(--ink);margin:32px 0 16px;letter-spacing:.01em;}
+  .landing-picker-label{font-size:12px;font-weight:700;color:var(--ink-soft);margin:44px 0 18px;letter-spacing:.09em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
   .scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:880px;}
   .scenario-card{
     text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;
@@ -152,8 +148,7 @@
   }
   .scenario-card:hover{border-color:#c3d3c3;transform:translateY(-3px);box-shadow:0 16px 32px -22px rgba(28,28,28,.3);}
   .scenario-card.selected{border-color:var(--td-green);background:var(--td-green-pale);}
-  .scenario-card .tile.lg{margin-bottom:16px;background:var(--td-green-pale);border-color:transparent;}
-  .scenario-card.selected .tile.lg{background:#fff;}
+  .scenario-card .tile.lg{margin-bottom:14px;background:transparent;border:none;}
   .scenario-card-label{font-weight:700;font-size:17px;letter-spacing:-0.01em;margin-bottom:6px;}
   .scenario-card-tagline{color:var(--ink-soft);font-size:13px;line-height:1.5;flex:1;}
   .scenario-card-cta{color:var(--td-green-dark);font-weight:600;font-size:13px;margin-top:16px;}
@@ -186,8 +181,8 @@
     background:var(--card-brand);color:#fff;font-size:12px;font-weight:700;
     display:flex;align-items:center;justify-content:center;
   }
-  .bank-logo-wrap{width:100%;height:40px;display:flex;align-items:center;justify-content:center;}
-  .bank-logo{height:36px;width:auto;object-fit:contain;}
+  .bank-logo-wrap{width:100%;height:64px;display:flex;align-items:center;justify-content:center;}
+  .bank-logo{max-height:60px;max-width:130px;width:auto;height:auto;object-fit:contain;}
   .bank-fallback{width:36px;height:36px;border-radius:8px;background:var(--ink-soft);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;}
   .bank-fallback.small{width:28px;height:28px;font-size:13px;}
   .bank-name{font-weight:600;font-size:14px;}
@@ -223,7 +218,6 @@
   .scan-counter{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-size:62px;font-weight:700;margin:18px 0 2px;color:var(--td-green-dark);letter-spacing:-0.02em;}
   .scan-label{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-soft);margin-bottom:20px;}
   .progress-track{width:100%;max-width:480px;height:8px;background:var(--paper);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:14px;}
-  .progress-track.dark{background:var(--terminal-line);border-color:var(--terminal-line);}
   .progress-fill{height:100%;width:0;background:var(--td-green);transition:width .1s linear;border-radius:999px;}
   .scan-results{width:100%;max-width:860px;margin-top:20px;text-align:left;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .scan-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;animation:rowIn .35s ease both;}
@@ -259,34 +253,37 @@
   .consent-note{font-size:12px;color:var(--ink-soft);margin-top:14px;line-height:1.5;}
   .consent-ref{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
 
-  /* ---------- Screen 9: agent at work ---------- */
-  .agent-screen{display:flex;flex:1;min-height:0;}
-  .agent-terminal{flex:0 0 55%;background:var(--terminal-bg);color:var(--terminal-text);padding:28px 28px 0;display:flex;flex-direction:column;border-right:1px solid var(--terminal-line);min-width:0;}
-  .terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--terminal-dim);flex-shrink:0;}
-  .terminal-log{flex:1;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.85;padding-bottom:28px;max-height:420px;min-height:0;transition:max-height .5s ease;}
-  .agent-terminal.has-panel .terminal-log{max-height:130px;}
-  .term-line{white-space:pre-wrap;}
-  .term-ts{color:var(--terminal-dim);opacity:.65;margin-right:9px;font-size:11px;}
-  .term-dim{color:var(--terminal-dim);}
-  .term-ok{color:#8FE8A8;}
-  .term-warn{color:#E8C97A;}
-  .term-cursor{display:inline-block;animation:blink 1s step-end infinite;}
-  @keyframes blink{50%{opacity:0;}}
-  .agent-checklist{flex:0 0 45%;background:var(--terminal-bg);padding:28px;color:var(--terminal-text);min-width:0;overflow-y:auto;}
-  .checklist-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--terminal-dim);margin-bottom:8px;}
-  .checklist-counter{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-size:26px;font-weight:700;margin-bottom:12px;}
-  .checklist-items{margin-top:18px;display:flex;flex-direction:column;}
-  .checklist-row{display:flex;align-items:center;gap:12px;padding:8px;margin:0 -8px;border-bottom:1px solid var(--terminal-line);font-size:13px;border-radius:6px;transition:background .3s;}
-  .checklist-row.active{background:rgba(207,239,218,.06);}
-  .checklist-row .tile.sm{background:#fff;border-color:transparent;}
-  .glyph{width:18px;text-align:center;color:var(--terminal-dim);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
-  .glyph-mid{color:#E8C97A;}
-  .glyph-ok{color:#8FE8A8;}
-  .glyph-warn{color:#E8C97A;}
-  .agent-footer{padding:20px 28px;background:var(--terminal-bg);border-top:1px solid var(--terminal-line);display:flex;justify-content:space-between;align-items:center;color:var(--terminal-text);gap:16px;}
+  /* ---------- Screen 9: migration progress (consumer view) ---------- */
+  .migrate-screen{flex:1;display:flex;flex-direction:column;}
+  .migrate-head{display:flex;justify-content:space-between;align-items:flex-start;gap:28px;margin-bottom:24px;}
+  .migrate-head h1{margin-bottom:10px;}
+  .migrate-progress{text-align:right;flex-shrink:0;min-width:210px;padding-top:6px;}
+  .migrate-count{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-size:30px;font-weight:700;color:var(--td-green-dark);margin-bottom:2px;line-height:1;}
+  .migrate-count small{display:block;font-family:'Hanken Grotesk',sans-serif;font-size:12px;color:var(--ink-soft);font-weight:600;margin-top:6px;margin-bottom:10px;}
+  .migrate-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;flex:1;align-items:start;}
+  .current-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;gap:16px;align-items:center;min-height:96px;}
+  .current-card .tile.lg{background:#fff;border:1px solid var(--line);}
+  .current-info{flex:1;min-width:0;}
+  .current-name{font-weight:700;font-size:16px;letter-spacing:-0.01em;}
+  .current-status{font-size:13px;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
+  .working-dots{display:inline-flex;gap:4px;margin-left:7px;vertical-align:middle;}
+  .working-dots span{width:5px;height:5px;border-radius:50%;background:var(--td-green);animation:dotpulse 1.2s infinite;}
+  .working-dots span:nth-child(2){animation-delay:.2s;}
+  .working-dots span:nth-child(3){animation-delay:.4s;}
+  @keyframes dotpulse{0%,100%{opacity:.25;}50%{opacity:1;}}
+  .agent-ticker{margin-top:12px;font-size:11px;color:var(--ink-soft);opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:2px;}
+  .status-list{border:1px solid var(--line);border-radius:14px;background:#fff;padding:4px 18px;max-height:432px;overflow-y:auto;}
+  .status-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;transition:background .3s;}
+  .status-row:last-child{border-bottom:none;}
+  .status-row .st-name{flex:1;font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .st-state{font-size:12px;color:var(--ink-soft);white-space:nowrap;font-weight:500;}
+  .st-state.ok{color:var(--td-green-dark);font-weight:700;}
+  .st-state.warn{color:var(--amber);font-weight:700;}
+  .status-row.active{background:var(--td-green-pale);margin:0 -12px;padding-left:12px;padding-right:12px;border-radius:8px;border-bottom-color:transparent;}
+  .migrate-footer{border-top:1px solid var(--line);padding:18px 0 0;display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:20px;}
 
   /* killer shot — fake Rogers portal */
-  .killer-panel{max-height:0;overflow:hidden;transition:max-height .5s ease;flex-shrink:0;}
+  .killer-panel{max-height:0;overflow:hidden;transition:max-height .5s ease;flex-shrink:0;margin-top:14px;}
   .killer-panel.expanded{max-height:460px;}
   .browser-mock{background:#e9edf0;border-radius:10px;overflow:hidden;position:relative;border:1px solid #cbd3d8;margin:10px 0;box-shadow:0 14px 34px -16px rgba(0,0,0,.55);}
   .browser-chrome{background:#dfe4e8;padding:8px 12px;display:flex;align-items:center;gap:6px;}
@@ -377,8 +374,9 @@
     .welcome-screen{grid-template-columns:1fr;}
     .welcome-left h1{font-size:38px;}
     .landing h1{font-size:34px;}
-    .agent-screen{flex-direction:column;}
-    .agent-terminal, .agent-checklist{flex:none;border-right:none;}
+    .migrate-grid{grid-template-columns:1fr;}
+    .migrate-head{flex-direction:column;}
+    .migrate-progress{text-align:left;}
     .done-summary-grid, .scan-results, .review-list, .plan-list{grid-template-columns:1fr;}
     .sign-cols{grid-template-columns:1fr;}
     .screen-pad{padding:36px 24px;}
@@ -528,7 +526,6 @@ function goTo(newScreen) {
   els.screenRoot.style.transform = 'translateY(6px)';
   schedule(() => {
     state.screen = newScreen;
-    els.device.classList.toggle('terminal-mode', newScreen === 9);
     els.screenRoot.innerHTML = '';
     renderRail();
     updateHud();
@@ -691,13 +688,13 @@ function renderInstitution() {
       <p class="subcopy">SwitchEasy connects to your current institution to read your transaction history.</p>
       <div class="bank-grid">
         ${banks.map(b => `
-          <button type="button" class="bank-card" data-id="${b.id}" style="--card-brand:${b.brand}">
+          <button type="button" class="bank-card" data-id="${b.id}" style="--card-brand:${b.brand}" aria-label="${b.name}">
             <div class="bank-logo-wrap">
               ${b.logo
                 ? `<img src="${b.logo}" alt="${b.name}" class="bank-logo" data-fb="${b.logoFallback || ''}" data-letter="${b.name[0]}">`
                 : `<div class="bank-fallback">${b.name[0]}</div>`}
             </div>
-            <div class="bank-name">${b.name}</div>
+            ${b.logo ? '' : `<div class="bank-name">${b.name}</div>`}
           </button>`).join('')}
       </div>
       <div id="otherWrap" class="other-input-wrap" hidden>
@@ -1067,73 +1064,74 @@ function renderConsent() {
 function renderAgent() {
   const items = selectedItems();
   els.screenRoot.innerHTML = `
-    <div class="agent-screen">
-      <div class="agent-terminal" id="agentTerminal">
-        <div class="terminal-header">
-          <span>⚡ agent_core.log</span>
-          <span class="pill-badge dark" id="livePill"><span class="dot"></span> reasoning live</span>
+    <div class="screen-pad migrate-screen">
+      <div class="migrate-head">
+        <div>
+          <div class="pill-badge" id="livePill"><span class="dot"></span> AGENT WORKING</div>
+          <h1 id="migrateHeading">Moving your payments to TD…</h1>
+          <p class="subcopy" id="migrateSub">The agent is signing in and updating each biller for you. Anything that needs your signature waits for you at the end.</p>
         </div>
-        <div class="terminal-log" id="termLog"><span class="term-cursor">█</span></div>
+        <div class="migrate-progress">
+          <div class="migrate-count"><span id="checkCounter">0</span> of ${items.length}<small>payments moved</small></div>
+          <div class="progress-track" style="max-width:210px;margin-left:auto;"><div class="progress-fill" id="checkFill"></div></div>
+        </div>
       </div>
-      <div class="agent-checklist">
-        <div class="checklist-label">MIGRATION CHECKLIST</div>
-        <div class="checklist-counter" id="checkCounter">0/${items.length}</div>
-        <div class="progress-track dark"><div class="progress-fill" id="checkFill"></div></div>
-        <div class="checklist-items">
+      <div class="migrate-grid">
+        <div class="migrate-left">
+          <div class="current-card">
+            <span id="currentTile">${tile({ icon: '⏳' }, 'lg')}</span>
+            <div class="current-info">
+              <div class="current-name" id="currentName">Getting ready</div>
+              <div class="current-status" id="currentStatus">Reviewing your authorization<span class="working-dots"><span></span><span></span><span></span></span></div>
+            </div>
+          </div>
+          <div id="panelHost"></div>
+          <div class="agent-ticker mono" id="agentTicker">agent · consent verified — run starting</div>
+        </div>
+        <div class="status-list" id="statusList">
           ${items.map((t, i) => `
-            <div class="checklist-row" id="checkrow-${i}">
-              <span class="glyph" id="glyph-${i}">○</span>
+            <div class="status-row" id="strow-${i}">
               ${tile(t, 'sm')}
-              <span class="check-name">${t.name}</span>
+              <span class="st-name">${t.name}</span>
+              <span class="st-state" id="ststate-${i}">Queued</span>
             </div>`).join('')}
         </div>
       </div>
-    </div>
-    <div class="agent-footer" id="agentFooter" hidden>
-      <span class="mono" id="agentFooterText"></span>
-      <button type="button" class="btn-primary" id="continueBtn">Continue →</button>
+      <div class="migrate-footer" id="agentFooter" hidden>
+        <span class="mono" id="agentFooterText"></span>
+        <button type="button" class="btn-primary" id="continueBtn">Continue →</button>
+      </div>
     </div>`;
 
-  const terminal = els.screenRoot.querySelector('#agentTerminal');
-  const termLog = els.screenRoot.querySelector('#termLog');
-  const cursorEl = els.screenRoot.querySelector('.term-cursor');
+  const panelHost = els.screenRoot.querySelector('#panelHost');
   const livePill = els.screenRoot.querySelector('#livePill');
   const checkFill = els.screenRoot.querySelector('#checkFill');
   const checkCounter = els.screenRoot.querySelector('#checkCounter');
+  const currentTile = els.screenRoot.querySelector('#currentTile');
+  const currentName = els.screenRoot.querySelector('#currentName');
+  const currentStatus = els.screenRoot.querySelector('#currentStatus');
+  const ticker = els.screenRoot.querySelector('#agentTicker');
   const footer = els.screenRoot.querySelector('#agentFooter');
   const footerText = els.screenRoot.querySelector('#agentFooterText');
   const continueBtn = els.screenRoot.querySelector('#continueBtn');
 
   let doneCount = 0;
-  const runStart = Date.now();
+  const DOTS = '<span class="working-dots"><span></span><span></span><span></span></span>';
+  const strip = t => t.replace(/^[→✓!▸]\s*/, '');
 
-  function ts() {
-    const e = (Date.now() - runStart) / 1000;
-    const m = String(Math.floor(e / 60)).padStart(2, '0');
-    const s = (e % 60).toFixed(1).padStart(4, '0');
-    return `${m}:${s}`;
+  function showStep(text, working) {
+    currentStatus.innerHTML = strip(text) + (working ? DOTS : '');
+    ticker.textContent = 'agent · ' + text;
   }
-
-  function appendLine(text, type) {
-    const line = document.createElement('div');
-    line.className = 'term-line term-' + type;
-    const tsSpan = document.createElement('span');
-    tsSpan.className = 'term-ts';
-    tsSpan.textContent = ts();
-    line.appendChild(tsSpan);
-    line.appendChild(document.createTextNode(text));
-    termLog.insertBefore(line, cursorEl);
-    termLog.scrollTop = termLog.scrollHeight;
-  }
-  function setGlyph(i, ch, cls) {
-    const g = els.screenRoot.querySelector('#glyph-' + i);
-    if (g) { g.textContent = ch; g.className = 'glyph ' + cls; }
-    const row = els.screenRoot.querySelector('#checkrow-' + i);
-    if (row) row.classList.toggle('active', cls === 'glyph-mid');
+  function setRowState(i, text, cls, active) {
+    const st = els.screenRoot.querySelector('#ststate-' + i);
+    if (st) { st.textContent = text; st.className = 'st-state' + (cls ? ' ' + cls : ''); }
+    const row = els.screenRoot.querySelector('#strow-' + i);
+    if (row) row.classList.toggle('active', !!active);
   }
   function updateDone() {
     doneCount++;
-    checkCounter.textContent = `${doneCount}/${items.length}`;
+    checkCounter.textContent = doneCount;
     checkFill.style.width = (doneCount / items.length * 100) + '%';
   }
 
@@ -1224,8 +1222,7 @@ function renderAgent() {
           <div class="toast" id="portalToast">Payment method updated.</div>
         </div>
       </div>`;
-    termLog.parentElement.insertBefore(panel, termLog);
-    terminal.classList.add('has-panel');
+    panelHost.appendChild(panel);
     requestAnimationFrame(() => panel.classList.add('expanded'));
 
     const cursor = panel.querySelector('#cursorArrow');
@@ -1250,7 +1247,6 @@ function renderAgent() {
                   toast.classList.add('show');
                   schedule(() => {
                     panel.classList.remove('expanded');
-                    terminal.classList.remove('has-panel');
                     schedule(() => { panel.remove(); cb(); }, 500);
                   }, 1200);
                 }, 150);
@@ -1268,25 +1264,27 @@ function renderAgent() {
     const lines = agentLogLines(tx);
     const pre = lines.slice(0, -1);
     const last = lines[lines.length - 1];
-    setGlyph(i, '◐', 'glyph-mid');
+    currentTile.innerHTML = tile(tx, 'lg');
+    currentName.textContent = tx.name;
+    setRowState(i, 'In progress', '', true);
 
     let j = 0;
     function playPre() {
       if (j < pre.length) {
-        appendLine(pre[j].text, pre[j].type);
+        showStep(pre[j].text, true);
         j++;
         schedule(playPre, T.termAfterOk);
       } else if (tx.killerShot) {
         runKillerShot(tx, () => {
-          appendLine(last.text, last.type);
-          setGlyph(i, '✓', 'glyph-ok');
+          showStep(last.text, false);
+          setRowState(i, 'Moved ✓', 'ok', false);
           updateDone();
           schedule(() => processTx(i + 1), T.termLineDelay);
         });
       } else {
-        appendLine(last.text, last.type);
+        showStep(last.text, false);
         const ok = last.type === 'ok';
-        setGlyph(i, ok ? '✓' : '!', ok ? 'glyph-ok' : 'glyph-warn');
+        setRowState(i, ok ? 'Moved ✓' : 'Needs signature', ok ? 'ok' : 'warn', false);
         updateDone();
         schedule(() => processTx(i + 1), T.termLineDelay);
       }
@@ -1299,8 +1297,17 @@ function renderAgent() {
     const flaggedCount = items.filter(t => t.needsApproval).length;
     state.finalAuto = autoCount;
     state.finalFlagged = flaggedCount;
-    appendLine(`✓ run complete — ${autoCount} migrated, ${flaggedCount} flagged`, 'ok');
-    livePill.innerHTML = '✓ run complete';
+    currentTile.innerHTML = `<span class="tile lg" style="background:var(--td-green);border:none;color:#fff;"><span class="tile-emoji" style="font-size:26px;">✓</span></span>`;
+    currentName.textContent = 'All payments handled';
+    currentStatus.textContent = flaggedCount > 0
+      ? `${autoCount} moved automatically — ${flaggedCount} waiting for your signature.`
+      : 'Everything moved automatically.';
+    ticker.textContent = `agent · run complete — ${autoCount} migrated, ${flaggedCount} flagged`;
+    livePill.innerHTML = '✓ AGENT FINISHED';
+    els.screenRoot.querySelector('#migrateHeading').textContent = 'Your payments have moved.';
+    els.screenRoot.querySelector('#migrateSub').textContent = flaggedCount > 0
+      ? 'Almost there — one form just needs your signature on the next screen.'
+      : 'Everything is set up at TD. Review the summary on the next screen.';
     footer.hidden = false;
     footerText.textContent = `Run complete — ${autoCount} migrated, ${flaggedCount} awaiting your signature.`;
     footer.classList.add('fade-in');
@@ -1311,8 +1318,6 @@ function renderAgent() {
   });
 
   if (items.length === 0) { finish(); return; }
-  appendLine(`▸ SwitchEasy agent — consent verified, run started`, 'dim');
-  appendLine(`▸ ${items.length} payments queued · target: TD Canada Trust`, 'dim');
   schedule(() => processTx(0), T.termLineDelay);
 }
 
