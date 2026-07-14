@@ -262,7 +262,8 @@
   .migrate-count small{display:block;font-family:'Hanken Grotesk',sans-serif;font-size:12px;color:var(--ink-soft);font-weight:600;margin-top:6px;margin-bottom:10px;}
   .migrate-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;flex:1;align-items:start;}
   .current-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;gap:16px;align-items:center;min-height:96px;}
-  .current-card .tile.lg{background:#fff;border:1px solid var(--line);}
+  .current-card .tile.lg{background:#fff;border:1px solid var(--line);min-width:68px;max-width:150px;padding:0 12px;}
+  .current-card .tile.lg img{max-width:126px;max-height:60%;width:auto;height:auto;}
   .current-info{flex:1;min-width:0;}
   .current-name{font-weight:700;font-size:16px;letter-spacing:-0.01em;}
   .current-status{font-size:13px;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
@@ -1268,7 +1269,13 @@ function renderAgent() {
     let j = 0;
     function playPre() {
       if (j < pre.length) {
-        showStep(pre[j].text, true);
+        // the first log line just re-states the item — show a friendlier step instead
+        if (j === 0) {
+          currentStatus.innerHTML = `Preparing the ${tx.cat} update` + DOTS;
+          ticker.textContent = 'agent · ' + pre[0].text;
+        } else {
+          showStep(pre[j].text, true);
+        }
         j++;
         schedule(playPre, T.termAfterOk);
       } else if (tx.killerShot) {
