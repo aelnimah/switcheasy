@@ -24,13 +24,15 @@ export const banks = [
 
 // Credential groups the agent can ask for. Transactions reference these via
 // their `access` field. Order here = order the user is asked in.
+// `demo` is the value auto-filled into the username field during the demo so the
+// four sign-ins breeze by hands-free; the password is always masked dots.
 export const credentialGroups = {
-  google: { name: "Google",         tag: "Sign in with Google",  brand: "#1A73E8", light: true,  field: "Email",             logo: "assets/billers/google.png",    blurb: "One sign-in covers every account linked to your Google identity." },
-  rogers: { name: "Rogers",         tag: "Rogers ID",            brand: "#DA291C", light: false, field: "Email or username",  logo: "assets/billers/rogers.png",    blurb: "Rogers and Fido share a single Rogers ID — one sign-in covers both." },
-  telus:  { name: "TELUS",          tag: "TELUS My Account",     brand: "#4B286D", light: false, field: "Email",             logo: "assets/billers/telus.png",     blurb: "Needed to update billing on your TELUS services." },
-  cra:    { name: "CRA My Account", tag: "Government of Canada", brand: "#26374A", light: false, field: "CRA user ID",       logo: "assets/billers/cra.png",       blurb: "Needed to update your banking details with the CRA." },
-  square: { name: "Square",         tag: "Square Dashboard",     brand: "#3E4348", light: false, field: "Email",             logo: "assets/billers/square.png",    blurb: "Needed to change where your card sales settle." },
-  uber:   { name: "Uber Eats",      tag: "Merchant portal",      brand: "#06C167", light: false, field: "Email",             logo: "assets/billers/uber-eats.png", blurb: "Needed to change where your delivery payouts are deposited." },
+  google: { name: "Google",         tag: "Sign in with Google",  brand: "#1A73E8", light: true,  field: "Email",             logo: "assets/billers/google.png",    demo: "j.morgan@gmail.com",  blurb: "One sign-in covers every account linked to your Google identity." },
+  rogers: { name: "Rogers",         tag: "Rogers ID",            brand: "#DA291C", light: false, field: "Email or username",  logo: "assets/billers/rogers.png",    demo: "j.morgan",            blurb: "Rogers and Fido share a single Rogers ID — one sign-in covers both." },
+  telus:  { name: "TELUS",          tag: "TELUS My Account",     brand: "#4B286D", light: false, field: "Email",             logo: "assets/billers/telus.png",     demo: "j.morgan@telus.net",  blurb: "Needed to update billing on your TELUS services." },
+  cra:    { name: "CRA My Account", tag: "Government of Canada", brand: "#26374A", light: false, field: "CRA user ID",       logo: "assets/billers/cra.png",       demo: "JMORGAN742",          blurb: "Needed to update your banking details with the CRA." },
+  square: { name: "Square",         tag: "Square Dashboard",     brand: "#3E4348", light: false, field: "Email",             logo: "assets/billers/square.png",    demo: "hello@maplemain.ca",  blurb: "Needed to change where your card sales settle." },
+  uber:   { name: "Uber Eats",      tag: "Merchant portal",      brand: "#06C167", light: false, field: "Email",             logo: "assets/billers/uber-eats.png", demo: "hello@maplemain.ca",  blurb: "Needed to change where your delivery payouts are deposited." },
 };
 
 // How each access type is explained on the analysis screen.
