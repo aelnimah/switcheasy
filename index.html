@@ -58,10 +58,6 @@
   .logo-tap img{width:28px;height:28px;object-fit:contain;}
   .wordmark{font-weight:700;font-size:18px;letter-spacing:-0.01em;}
   .wordmark small{font-weight:500;font-size:11px;color:var(--ink-soft);margin-left:7px;letter-spacing:0;}
-  .proto-pill{
-    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);
-    background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 12px;
-  }
   .restart-btn{
     background:transparent;border:1px solid var(--line);border-radius:8px;
     padding:9px 18px;font-weight:600;font-size:13px;color:var(--ink);cursor:pointer;
@@ -398,7 +394,6 @@
   <div class="chrome-left">
     <span class="logo-tap" id="logoTap"><img src="assets/logos/switcheasy.png" alt="SwitchEasy" id="logoImg"></span>
     <span class="wordmark">SwitchEasy <small>by TD</small></span>
-    <span class="proto-pill">TD Open Banking</span>
   </div>
   <button class="restart-btn" id="restartBtn" type="button">Restart</button>
 </header>
@@ -611,7 +606,7 @@ function renderLanding() {
       <div class="trust-row">
         ${LOCK_SVG} Read-only bank access
         <span class="sep">·</span> You approve every change
-        <span class="sep">·</span> Powered by TD Open Banking
+        <span class="sep">·</span> Bank-grade encryption
       </div>
       <div class="landing-picker-label">Who's switching today?</div>
       <div class="scenario-grid">
@@ -744,7 +739,7 @@ function renderConnect() {
           <input type="password" id="oauthPass" placeholder="••••••••">
           <p class="consent-text">SwitchEasy will receive read-only access to your transaction history. It can never move money without your approval.</p>
           <button type="button" class="btn-primary oauth-btn" id="connectBtn" disabled>Connect securely →</button>
-          <div class="oauth-secure">${LOCK_SVG} 256-bit encrypted session · Powered by TD Open Banking</div>
+          <div class="oauth-secure">${LOCK_SVG} 256-bit encrypted · read-only access</div>
           <div class="oauth-status mono" id="oauthStatus"></div>
         </div>
       </div>
@@ -762,7 +757,7 @@ function renderConnect() {
   btn.addEventListener('click', () => {
     btn.disabled = true;
     user.disabled = true; pass.disabled = true;
-    status.textContent = 'Establishing encrypted Open Banking session…';
+    status.textContent = 'Establishing encrypted secure session…';
     status.classList.add('visible');
     schedule(() => {
       status.textContent = '✓ Connected. Read-only access granted.';
@@ -1049,7 +1044,7 @@ function renderConsent() {
         ${sigCount ? `<div class="consent-item"><span class="consent-tick">✓</span><span>Prepare <strong>${sigCount} form${sigCount === 1 ? '' : 's'}</strong> that need${sigCount === 1 ? 's' : ''} your signature — nothing is sent until you sign.</span></div>` : ''}
         <div class="consent-item"><span class="consent-tick">✓</span><span>Record a receipt for every change so you can verify each one.</span></div>
         <div class="consent-note">Nothing is charged, moved or closed. Your old account stays open until you close it. You can revoke this authorization at any time.</div>
-        <div class="consent-ref">Consent ${ref} · ${today} · TD Open Banking framework</div>
+        <div class="consent-ref">Consent ${ref} · ${today} · SwitchEasy by TD</div>
       </div>
       <button type="button" class="btn-primary" id="consentBtn">I authorize SwitchEasy →</button>
     </div>`;
